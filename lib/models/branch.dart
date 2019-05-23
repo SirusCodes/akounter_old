@@ -1,9 +1,16 @@
 class Branch {
   int _id;
   String _name;
-  int _member, _bGreen, _aGreen, _count;
+  int _member, _bGreen, _aGreen, _count, _payType;
 
-  Branch(this._name, this._bGreen, this._aGreen, this._member, this._count);
+  Branch(
+    this._name,
+    this._bGreen,
+    this._aGreen,
+    this._member,
+    this._count,
+    this._payType,
+  );
 
   //getter
   int get id => _id;
@@ -12,6 +19,7 @@ class Branch {
   int get aGreen => _aGreen;
   int get member => _member;
   int get count => _count;
+  int get payType => _payType;
 
   //setter
   set name(String newName) {
@@ -36,6 +44,10 @@ class Branch {
     this._count = newcount;
   }
 
+  set payType(int newpay) {
+    this._payType = newpay;
+  }
+
   //convert to map object
   Map<String, dynamic> convertToMap() {
     var map = Map<String, dynamic>();
@@ -45,6 +57,7 @@ class Branch {
     map['aGreen'] = _aGreen;
     map['member'] = _member;
     map['count'] = _count;
+    map['payType'] = _payType;
     return map;
   }
 
@@ -56,5 +69,6 @@ class Branch {
     this._aGreen = map['aGreen'];
     this._member = map['member'];
     this._count = map['count'];
+    this._payType = map['payType'];
   }
 }

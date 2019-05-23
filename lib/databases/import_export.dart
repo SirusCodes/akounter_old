@@ -57,7 +57,8 @@ class _ExpoImpoState extends State<ExpoImpo> {
       _bGreenData,
       _aGreenData,
       _memberData,
-      _count;
+      _count,
+      _payType;
 
   DatabaseStudent _databaseStudent = DatabaseStudent();
 
@@ -198,12 +199,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   // import student data
   _importStudentData() async {
     Branch _branch = Branch(
-      _nameBranch,
-      _bGreenData,
-      _aGreenData,
-      _memberData,
-      _count,
-    );
+        _nameBranch, _bGreenData, _aGreenData, _memberData, _count, _payType);
 
     FlutterDocumentPickerParams params = FlutterDocumentPickerParams(
       allowedFileExtensions: ['csv'],
@@ -348,7 +344,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
         branchList.where((p) => p.name == branch).toList();
 
     String branchData =
-        "${branchName[0].name},${branchName[0].bGreen},${branchName[0].aGreen},${branchName[0].member},${branchName[0].count},${studentList.length},${entryList.length}\r\n";
+        "${branchName[0].name},${branchName[0].bGreen},${branchName[0].aGreen},${branchName[0].member},${branchName[0].count},${branchName[0].payType},${studentList.length},${entryList.length}\r\n";
     file.writeAsStringSync(branchData, mode: FileMode.append);
     print('branch done');
 
@@ -405,6 +401,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
       _aGreenData,
       _memberData,
       _count,
+      _payType,
     );
 
     int studentLength, entryLength;
@@ -424,8 +421,9 @@ class _ExpoImpoState extends State<ExpoImpo> {
       _branch.aGreen = int.parse(data[2]);
       _branch.member = int.parse(data[3]);
       _branch.count = int.parse(data[4]);
-      studentLength = int.parse(data[5]);
-      entryLength = int.parse(data[6]);
+      _branch.payType = int.parse(data[5]);
+      studentLength = int.parse(data[6]);
+      entryLength = int.parse(data[7]);
       _databaseBranch.insertName(_branch);
 
       for (int i = 1; i <= studentLength; i++) {

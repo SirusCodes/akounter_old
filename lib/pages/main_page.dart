@@ -23,15 +23,15 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   static String _name;
-  static int _bGreenData, _aGreenData, _memberData, _count;
+  static int _bGreenData, _aGreenData, _memberData, _count, _payTypeData;
   TextEditingController addBranchController = TextEditingController();
   DatabaseBranch data = DatabaseBranch();
-  int count, _aGreen, _bGreen, _member;
+  int count, _aGreen, _bGreen, _member, _payType;
   int index;
   var selectedBranch = "";
   List<Branch> branchName;
-  Branch _branchData =
-      Branch(_name, _bGreenData, _aGreenData, _memberData, _count);
+  Branch _branchData = Branch(
+      _name, _bGreenData, _aGreenData, _memberData, _count, _payTypeData);
 
 //change selected branch
   Future changeBranch(String _name) async {
@@ -163,8 +163,9 @@ class _MainPageState extends State<MainPage> {
                             ? Navigator.pushNamed(context, "SelBrnch")
                             : showSearch(
                                 context: context,
-                                delegate: StudentSearchEntry(
-                                    selectedBranch, _aGreen, _bGreen, _member));
+                                delegate: StudentSearchEntry(selectedBranch,
+                                    _aGreen, _bGreen, _member, _payType),
+                              );
                       }, //   action here
                     ),
                   ),
@@ -229,6 +230,7 @@ class _MainPageState extends State<MainPage> {
                               _aGreen = branchName[index].aGreen;
                               _bGreen = branchName[index].bGreen;
                               _member = branchName[index].member;
+                              _payType = branchName[index].payType;
                               newText(branchName[index].name, Colors.black);
                             },
                           );
@@ -284,7 +286,7 @@ class _MainPageState extends State<MainPage> {
             leading: Icon(Icons.add_box),
             onTap: () {
               Navigator.pop(context);
-              navigateToAddBranch(Branch("", null, null, null, null));
+              navigateToAddBranch(Branch("", null, null, null, null, 0));
             },
           ),
           //add student director
@@ -319,7 +321,7 @@ class _MainPageState extends State<MainPage> {
                   : showSearch(
                       context: context,
                       delegate: StudentSearchEntry(
-                          selectedBranch, _aGreen, _bGreen, _member));
+                          selectedBranch, _aGreen, _bGreen, _member, _payType));
             },
           ),
           //expansion for lists

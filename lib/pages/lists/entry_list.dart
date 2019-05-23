@@ -38,7 +38,7 @@ class _EntryListState extends State<EntryList> {
   String _branch,
       _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString();
   Student _student;
-  int _aGreen, _bGreen, _member;
+  int _aGreen, _bGreen, _member, _payType;
   Student _studentUpdate = Student(
     _roll,
     _name,
@@ -283,7 +283,7 @@ class _EntryListState extends State<EntryList> {
                       MaterialPageRoute(
                         builder: (context) {
                           return AddEntry(_student, _branch, _aGreen, _bGreen,
-                              _member, entry, "Edit Entry");
+                              _member, _payType, entry, "Edit Entry");
                         },
                       ),
                     );

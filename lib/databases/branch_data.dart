@@ -15,6 +15,7 @@ class DatabaseBranch {
   String colAGreen = 'aGreen';
   String colMember = 'member';
   String colCount = 'count';
+  String colPayType = 'payType';
 
   DatabaseBranch._createInstance();
 
@@ -44,7 +45,7 @@ class DatabaseBranch {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $branchTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT,$colBGreen INTEGER,$colAGreen INTEGER,$colMember INTEGER,$colCount INTEGER)');
+        'CREATE TABLE $branchTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT,$colBGreen INTEGER,$colAGreen INTEGER,$colMember INTEGER,$colCount INTEGER,$colPayType INTEGER)');
   }
 
   //fetching data from database

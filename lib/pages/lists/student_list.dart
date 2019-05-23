@@ -24,14 +24,15 @@ class _StudentListState extends State<StudentList> {
       _bGreen,
       _aGreen,
       _memberBranch,
-      _count;
+      _count,
+      _payType;
 
   _StudentListState(this.branch, this._branchData);
   List<Student> studentList, updatedList;
   int count;
   String branch;
   Branch _branchData =
-      Branch(_nameBranch, _bGreen, _aGreen, _memberBranch, _count);
+      Branch(_nameBranch, _bGreen, _aGreen, _memberBranch, _count, _payType);
 
   Student student = Student(_roll, _name, _dob, _branch, _belt, _fee, _fromFee,
       _num, _genderData, _advBal, _member);

@@ -29,7 +29,8 @@ class _AddStudentState extends State<AddStudent> {
       _memberStud,
       _bGreen,
       _aGreen,
-      _count;
+      _count,
+      _payType;
   String branch, title;
 
   var _student = Student(
@@ -47,7 +48,7 @@ class _AddStudentState extends State<AddStudent> {
   );
   DatabaseStudent _data = DatabaseStudent();
   DatabaseBranch _databaseBranch = DatabaseBranch();
-  var _branchData = Branch(_name, _bGreen, _aGreen, _member, _count);
+  var _branchData = Branch(_name, _bGreen, _aGreen, _member, _count, _payType);
 
   _AddStudentState(this._student, this._branchData, this.branch, this.title);
 

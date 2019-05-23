@@ -11,13 +11,20 @@ import 'package:sqflite/sqflite.dart';
 class AddEntry extends StatefulWidget {
   final Student _student;
   final String _branch, _title;
-  final int _aGreen, _bGreen, _member;
+  final int _aGreen, _bGreen, _member, _payType;
   final Entry _entry;
   AddEntry(this._student, this._branch, this._aGreen, this._bGreen,
-      this._member, this._entry, this._title);
+      this._member, this._payType, this._entry, this._title);
   @override
-  _AddEntryState createState() => _AddEntryState(this._student, this._branch,
-      this._aGreen, this._bGreen, this._member, this._entry, this._title);
+  _AddEntryState createState() => _AddEntryState(
+      this._student,
+      this._branch,
+      this._aGreen,
+      this._bGreen,
+      this._member,
+      this._payType,
+      this._entry,
+      this._title);
 }
 
 class _AddEntryState extends State<AddEntry> {
@@ -33,7 +40,8 @@ class _AddEntryState extends State<AddEntry> {
       _dob,
       _nameStd,
       _branchStd,
-      _num;
+      _num,
+      _uint8list;
   static int _totalEntry,
       _subTotalEntry,
       _roll,
@@ -42,7 +50,7 @@ class _AddEntryState extends State<AddEntry> {
       _gender,
       _advBalStd,
       _memberStd;
-  static String _uint8list;
+
   // database req
   Entry _entry = Entry(_roll, _name, _totalEntry, _subTotalEntry, _advBalEntry,
       _reason, _detailedReason, _dateEntry, _branch, _uint8list);
@@ -78,13 +86,16 @@ class _AddEntryState extends State<AddEntry> {
       _bGreen,
       _member,
       _monthlyFee,
-      _sizeNo = 12;
+      _sizeNo = 12,
+      _payType,
+      _invoiceId;
 
   TextEditingController _monthlyController = TextEditingController();
   TextEditingController _advBalController = TextEditingController();
   TextEditingController _dressSizeController = TextEditingController();
   TextEditingController _reasonController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
+  TextEditingController _monthlyIndirectController = TextEditingController();
   String _currentReason = "";
 
   List<String> _reasons = [
@@ -135,7 +146,7 @@ class _AddEntryState extends State<AddEntry> {
   }
 
   _AddEntryState(this._student, this.branch, this._aGreen, this._bGreen,
-      this._member, this._entry, this._title);
+      this._member, this._payType, this._entry, this._title);
 
   @override
   Widget build(BuildContext context) {
@@ -226,8 +237,8 @@ class _AddEntryState extends State<AddEntry> {
               GestureDetector(
                 onTap: () => showSearch(
                     context: context,
-                    delegate:
-                        StudentSearchEntry(branch, _aGreen, _bGreen, _member)),
+                    delegate: StudentSearchEntry(
+                        branch, _aGreen, _bGreen, _member, _payType)),
                 child: Card(
                   elevation: 3.0,
                   child: Column(
@@ -676,6 +687,28 @@ class _AddEntryState extends State<AddEntry> {
                       },
                     ),
                   ),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    key: Key('reason'),
+                    controller: _monthlyIndirectController,
+                    style: TextStyle(color: Colors.black),
+                    onChanged: (value) {
+                      _invoiceId = int.parse(value);
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Reason",
+                      hintStyle: TextStyle(color: Colors.black26),
+                      labelText: "Reason",
+                      labelStyle: TextStyle(color: Colors.black),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: 10.0,
+                        ),
+                      ),
+                    ),
+                  ),
                   Spacer(
                     flex: 1,
                   )
@@ -1115,9 +1148,10 @@ class _AddEntryState extends State<AddEntry> {
 // search
 //
 class StudentSearchEntry extends SearchDelegate<String> {
-  StudentSearchEntry(this.branch, this._aGreen, this._bGreen, this._member);
+  StudentSearchEntry(
+      this.branch, this._aGreen, this._bGreen, this._member, this._payType);
   List<Student> studentList, updatedList;
-  int count, _aGreen, _bGreen, _member;
+  int count, _aGreen, _bGreen, _member, _payType;
   String branch;
 
   static String _name,
@@ -1192,7 +1226,7 @@ class StudentSearchEntry extends SearchDelegate<String> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => AddEntry(suggestedList[index], branch,
-                      _aGreen, _bGreen, _member, _entry, "Add Entry"),
+                      _aGreen, _bGreen, _member, _payType, _entry, "Add Entry"),
                 ),
               );
             },

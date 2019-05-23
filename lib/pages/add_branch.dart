@@ -17,11 +17,12 @@ class _AddBranchState extends State<AddBranch> {
   TextEditingController aGreenController = TextEditingController();
   TextEditingController memberController = TextEditingController();
   static String _name;
-  static int _bGreen, _aGreen, _member, _count;
+  static int _bGreen, _aGreen, _member, _count, _payType;
   EdgeInsets _padding = EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0);
 
   DatabaseBranch data = DatabaseBranch();
-  var branch = Branch(_name, _bGreen, _aGreen, _member, _count);
+  var branch = Branch(_name, _bGreen, _aGreen, _member, _count, _payType);
+  bool _indirectCheck = false;
 
   _AddBranchState(this.branch);
   @override
@@ -43,6 +44,28 @@ class _AddBranchState extends State<AddBranch> {
         key: _addBranchFormKey,
         child: ListView(
           children: <Widget>[
+            // check indirect
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Checkbox(
+                    onChanged: (bool value) {
+                      setState(() {
+                        _indirectCheck = value;
+                      });
+                    },
+                    value: _indirectCheck,
+                  ),
+                  Text(
+                    "Indirect Payment   ",
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  )
+                ],
+              ),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -178,19 +201,40 @@ class _AddBranchState extends State<AddBranch> {
             setState(() {
               if (_addBranchFormKey.currentState.validate()) {
                 _addBranchFormKey.currentState.save();
-                _save();
+                _save(context);
               }
             });
           }),
     );
   }
 
-  void _save() async {
+  void _save(BuildContext context) async {
+    branch.payType = _indirectCheck ? 1 : 0;
     branch.count = 0;
-    Navigator.pop(context, true);
     branch.id == null
         ? await data.insertName(branch)
         : await data.updateName(branch);
-    print("done");
+    _showSnackBar(context, "${branch.name} is added");
+    reset();
+  }
+
+  // reset
+  reset() {
+    setState(() {
+      aGreenController.text = "";
+      nameController.text = "";
+      bGreenController.text = "";
+      memberController.text = "";
+      _indirectCheck = false;
+    });
+  }
+
+  //snackbar
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 400),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 }

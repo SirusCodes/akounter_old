@@ -3,9 +3,7 @@ import 'package:karate/pages/main_page.dart';
 import 'package:karate/select_branch.dart';
 import 'package:karate/work_in_progress.dart';
 
-void main() {
-  return runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override

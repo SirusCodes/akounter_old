@@ -687,28 +687,7 @@ class _AddEntryState extends State<AddEntry> {
                       },
                     ),
                   ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    key: Key('reason'),
-                    controller: _monthlyIndirectController,
-                    style: TextStyle(color: Colors.black),
-                    onChanged: (value) {
-                      _invoiceId = int.parse(value);
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Reason",
-                      hintStyle: TextStyle(color: Colors.black26),
-                      labelText: "Reason",
-                      labelStyle: TextStyle(color: Colors.black),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 10.0,
-                        ),
-                      ),
-                    ),
-                  ),
+                  invoiceText(),
                   Spacer(
                     flex: 1,
                   )
@@ -788,6 +767,36 @@ class _AddEntryState extends State<AddEntry> {
         ),
       ),
     );
+  }
+
+//
+// Invoice data
+//
+  Widget invoiceText() {
+    return _payType == 1
+        ? TextField(
+            keyboardType: TextInputType.number,
+            key: Key('Invoice'),
+            controller: _monthlyIndirectController,
+            style: TextStyle(color: Colors.black),
+            onChanged: (value) {
+              _invoiceId = int.parse(value);
+            },
+            decoration: InputDecoration(
+              hintText: "Reason",
+              hintStyle: TextStyle(color: Colors.black26),
+              labelText: "Reason",
+              labelStyle: TextStyle(color: Colors.black),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  color: Colors.black,
+                  width: 10.0,
+                ),
+              ),
+            ),
+          )
+        : null;
   }
 
   void checkNUpdate() {
@@ -1028,7 +1037,11 @@ class _AddEntryState extends State<AddEntry> {
     _entry.name = _student.name;
     _entry.total = _total;
     _entry.subTotal = _subTotal;
-    _entry.reason = _currentReason;
+    if (_payType == 0) {
+      _entry.reason = _currentReason;
+    } else {
+      _entry.reason = "$_currentReason($_invoiceId)";
+    }
     _entry.date = _date;
     _entry.branch = branch;
     _entry.pending = "0";

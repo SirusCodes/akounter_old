@@ -300,35 +300,30 @@ class _EntryListState extends State<EntryList> {
 
     int _month, _year;
 
-    switch (_entry.reason) {
-      case "Monthly":
-        temp = _entry.detailedReason.split(",");
-        _studentUpdate =
-            await _databaseStudent.getStudent(_entry.roll, _branch);
-        List temp1 = _studentUpdate.fee.split("/");
+    if (_entry.reason.startsWith("Monthly")) {
+      temp = _entry.detailedReason.split(",");
+      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, _branch);
+      List temp1 = _studentUpdate.fee.split("/");
 
+      print(1);
+      if (int.parse(temp1[0]) - temp.length < 0) {
+        _month = int.parse(temp1[0]) - temp.length + 12;
+        _year = int.parse(temp1[1]) - 1;
+      } else {
         print(1);
-        if (int.parse(temp1[0]) - temp.length < 0) {
-          _month = int.parse(temp1[0]) - temp.length + 12;
-          _year = int.parse(temp1[1]) - 1;
-        } else {
-          print(1);
-          _month = int.parse(temp1[0]) - temp.length;
-          _year = int.parse(temp1[1]);
-        }
-        print(1);
-        _studentUpdate.fee = "$_month/$_year";
+        _month = int.parse(temp1[0]) - temp.length;
+        _year = int.parse(temp1[1]);
+      }
+      print(1);
+      _studentUpdate.fee = "$_month/$_year";
 
-        print(temp.length);
-        print(_studentUpdate.fee);
-        _databaseStudent.updateStudent(_studentUpdate);
-        break;
-      case "Examination":
-        _studentUpdate =
-            await _databaseStudent.getStudent(_entry.roll, _branch);
-        _studentUpdate.belt--;
-        _databaseStudent.updateStudent(_studentUpdate);
-        break;
+      print(temp.length);
+      print(_studentUpdate.fee);
+      _databaseStudent.updateStudent(_studentUpdate);
+    } else if (_entry.reason == "Examination") {
+      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, _branch);
+      _studentUpdate.belt--;
+      _databaseStudent.updateStudent(_studentUpdate);
     }
   }
 }
@@ -526,33 +521,30 @@ class EntrySearch extends SearchDelegate<String> {
 
     int _month, _year;
 
-    switch (_entry.reason) {
-      case "Monthly":
-        temp = _entry.detailedReason.split(",");
-        _studentUpdate = await _databaseStudent.getStudent(_entry.roll, branch);
-        List temp1 = _studentUpdate.fee.split("/");
+    if (_entry.reason.startsWith("Monthly")) {
+      temp = _entry.detailedReason.split(",");
+      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, branch);
+      List temp1 = _studentUpdate.fee.split("/");
 
+      print(1);
+      if (int.parse(temp1[0]) - temp.length < 0) {
+        _month = int.parse(temp1[0]) - temp.length + 12;
+        _year = int.parse(temp1[1]) - 1;
+      } else {
         print(1);
-        if (int.parse(temp1[0]) - temp.length < 0) {
-          _month = int.parse(temp1[0]) - temp.length + 12;
-          _year = int.parse(temp1[1]) - 1;
-        } else {
-          print(1);
-          _month = int.parse(temp1[0]) - temp.length;
-          _year = int.parse(temp1[1]);
-        }
-        print(1);
-        _studentUpdate.fee = "$_month/$_year";
+        _month = int.parse(temp1[0]) - temp.length;
+        _year = int.parse(temp1[1]);
+      }
+      print(1);
+      _studentUpdate.fee = "$_month/$_year";
 
-        print(temp.length);
-        print(_studentUpdate.fee);
-        _databaseStudent.updateStudent(_studentUpdate);
-        break;
-      case "Examination":
-        _studentUpdate = await _databaseStudent.getStudent(_entry.roll, branch);
-        _studentUpdate.belt--;
-        _databaseStudent.updateStudent(_studentUpdate);
-        break;
+      print(temp.length);
+      print(_studentUpdate.fee);
+      _databaseStudent.updateStudent(_studentUpdate);
+    } else if (_entry.reason == "Examination") {
+      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, branch);
+      _studentUpdate.belt--;
+      _databaseStudent.updateStudent(_studentUpdate);
     }
   }
 }

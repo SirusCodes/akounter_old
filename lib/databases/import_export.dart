@@ -32,6 +32,8 @@ class _ExpoImpoState extends State<ExpoImpo> {
   String rows;
   List<dynamic> row = List<dynamic>();
 
+  bool _checkSelectBranch = false;
+
   static String _name,
       _reason,
       _detailedReason,
@@ -73,6 +75,10 @@ class _ExpoImpoState extends State<ExpoImpo> {
   void initState() {
     super.initState();
     checkWritePermission();
+    _updateBranchList();
+    _updateEntryList();
+    _updateStudentList();
+    _checkSelectBranch = branch.isNotEmpty ? true : false;
   }
 
   @override
@@ -90,15 +96,18 @@ class _ExpoImpoState extends State<ExpoImpo> {
             onTap: () => _importBackUp(),
           ),
           ListTile(
+            enabled: _checkSelectBranch,
             title: Text("Import Student list"),
             leading: Icon(Icons.file_download),
             onTap: () => _importStudentData(),
           ),
           ListTile(
+              enabled: _checkSelectBranch,
               title: Text("Import Entry list"),
               leading: Icon(Icons.file_download),
               onTap: () => _importEntryData()),
           ListTile(
+            enabled: _checkSelectBranch,
             title: Text("Create BackUp"),
             leading: Icon(Icons.file_upload),
             onTap: () {
@@ -107,6 +116,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
             },
           ),
           ListTile(
+              enabled: _checkSelectBranch,
               title: Text("Export Student list"),
               leading: Icon(Icons.file_upload),
               onTap: () {
@@ -114,6 +124,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
                 _exportStudentData();
               }),
           ListTile(
+            enabled: _checkSelectBranch,
             title: Text("Export Entry list"),
             leading: Icon(Icons.file_upload),
             onTap: () {
@@ -132,9 +143,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
     dbFuture.then((database) {
       Future<List<Student>> studentListFuture = _databaseStudent.getNameList();
       studentListFuture.then((list) {
-        setState(() {
-          this.studentList = list.where((p) => p.branch == branch).toList();
-        });
+        studentList = list.where((p) => p.branch == branch).toList();
       });
     });
   }
@@ -236,7 +245,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
         student.gender = int.parse(row[4]);
         student.fee = row[5];
         student.fromFee = row[6];
-        student.branch = row[7];
+        student.branch = branch;
         student.belt = int.parse(row[8]);
         student.advBal = int.parse(row[9]);
         student.member = int.parse(row[10]);
@@ -312,7 +321,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
         List<dynamic> data = res[i];
         entry.roll = int.parse(data[0]);
         entry.name = data[1];
-        entry.branch = data[2];
+        entry.branch = branch;
         entry.advBal = data[3];
         entry.date = data[4];
         entry.detailedReason = data[5];

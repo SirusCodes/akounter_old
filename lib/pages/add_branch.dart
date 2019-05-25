@@ -12,6 +12,8 @@ class AddBranch extends StatefulWidget {
 
 class _AddBranchState extends State<AddBranch> {
   var _addBranchFormKey = GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> _addBranchScaffoldKey = GlobalKey<ScaffoldState>();
+
   TextEditingController nameController = TextEditingController();
   TextEditingController bGreenController = TextEditingController();
   TextEditingController aGreenController = TextEditingController();
@@ -33,6 +35,9 @@ class _AddBranchState extends State<AddBranch> {
       aGreenController.text = branch.aGreen.toString();
       bGreenController.text = branch.bGreen.toString();
       memberController.text = branch.member.toString();
+      if (branch.payType == 1) {
+        _indirectCheck = true;
+      }
     }
   }
 
@@ -195,38 +200,42 @@ class _AddBranchState extends State<AddBranch> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          child: Icon(Icons.check),
-          onPressed: () {
-            setState(() {
-              if (_addBranchFormKey.currentState.validate()) {
-                _addBranchFormKey.currentState.save();
-                _save(context);
-              }
-            });
-          }),
+        backgroundColor: Theme.of(context).primaryColor,
+        child: Icon(Icons.check),
+        onPressed: () {
+          if (_addBranchFormKey.currentState.validate()) {
+            _addBranchFormKey.currentState.save();
+          }
+          _save();
+        },
+      ),
     );
   }
 
-  void _save(BuildContext context) async {
+  void _save() async {
     branch.payType = _indirectCheck ? 1 : 0;
     branch.count = 0;
-    branch.id == null
+    int result = branch.id == null
         ? await data.insertName(branch)
         : await data.updateName(branch);
-    _showSnackBar(context, "${branch.name} is added");
-    reset();
+    Navigator.pop(context);
+    // if (result != 0) {
+    //   _showSnackBar(context, '${nameController.text} is saved/updated!');
+    // } else {
+    //   _showSnackBar(context, 'Problem Saving Data');
+    // }
+    // setState(() {
+    //   reset();
+    // });
   }
 
   // reset
   reset() {
-    setState(() {
-      aGreenController.text = "";
-      nameController.text = "";
-      bGreenController.text = "";
-      memberController.text = "";
-      _indirectCheck = false;
-    });
+    aGreenController.text = "";
+    nameController.text = "";
+    bGreenController.text = "";
+    memberController.text = "";
+    _indirectCheck = false;
   }
 
   //snackbar
@@ -235,6 +244,6 @@ class _AddBranchState extends State<AddBranch> {
       content: Text(message),
       duration: Duration(milliseconds: 400),
     );
-    Scaffold.of(context).showSnackBar(snackBar);
+    _addBranchScaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

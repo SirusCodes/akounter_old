@@ -212,17 +212,13 @@ class _MainPageState extends State<MainPage> {
                                   .deleteBranchEntry(branchName[index].name);
                               _showSnackBar(
                                   context, "Restart the app to see changes");
+                              _updateBranchList();
                             });
                           },
                         ),
                         onTap: () {
-                          Scaffold.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                                  Text("${branchName[index].name} is selected"),
-                              duration: Duration(milliseconds: 400),
-                            ),
-                          );
+                          _showSnackBar(
+                              context, "${branchName[index].name} is selected");
                           setState(
                             () {
                               _branchData = branchName[index];
@@ -255,7 +251,7 @@ class _MainPageState extends State<MainPage> {
                   Container(
                     width: 300.0,
                     child: Text(
-                      "v1.3",
+                      "v1.4",
                       textAlign: TextAlign.right,
                     ),
                   )
@@ -399,7 +395,10 @@ class _MainPageState extends State<MainPage> {
 
   // show snackbar
   void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(milliseconds: 400),
+    );
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 

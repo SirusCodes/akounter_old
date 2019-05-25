@@ -230,6 +230,7 @@ class _StudentListState extends State<StudentList> {
   }
 
   navigateToStudent(Student student) async {
+    Navigator.pop(context);
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return AddStudent(student, _branchData, branch, "Edit Details");
     }));
@@ -415,6 +416,7 @@ class StudentSearch extends SearchDelegate<String> {
   }
 
   navigateToStudent(Student student, BuildContext context) async {
+    Navigator.pop(context);
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return AddStudent(student, _branchData, branch, "Edit Details");
     }));

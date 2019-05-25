@@ -64,7 +64,8 @@ class _AddEntryState extends State<AddEntry> {
       _equipVisible = false,
       _dressVisible = false,
       _otherVisible = false,
-      _advBalVisible = false;
+      _advBalVisible = false,
+      _payTypeVisible = false;
   // BoolCheck
   bool _glovesCheck = false,
       _kickpadCheck = false,
@@ -77,7 +78,9 @@ class _AddEntryState extends State<AddEntry> {
 
   String branch,
       _title,
-      _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString();
+      _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
+      _currentReason = "";
+
   int _total = 0,
       _subTotal = 0,
       _monthsNoSelected,
@@ -96,7 +99,6 @@ class _AddEntryState extends State<AddEntry> {
   TextEditingController _reasonController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   TextEditingController _monthlyIndirectController = TextEditingController();
-  String _currentReason = "";
 
   List<String> _reasons = [
     'Monthly',
@@ -158,6 +160,9 @@ class _AddEntryState extends State<AddEntry> {
 
     // to balance data
     _total = _subTotal - _student.advBal + int.parse(_advBalController.text);
+
+    // innvoice getter
+    _payTypeVisible = _payType == 1 && _monthlyVisible ? true : false;
 
     return Scaffold(
       appBar: AppBar(
@@ -356,6 +361,10 @@ class _AddEntryState extends State<AddEntry> {
               //
               buildMonthlyFee(),
               //
+              // Invoice card
+              //
+              invoiceCard(),
+              //
               // Examination
               //
               buildExaminationFee(),
@@ -387,115 +396,108 @@ class _AddEntryState extends State<AddEntry> {
     );
   }
 
-  Visibility buildDressFee() {
+//
+// MONTHLY FEE
+//
+  Visibility buildMonthlyFee() {
     return Visibility(
-      visible: _dressVisible,
+      visible: _monthlyVisible,
       child: Card(
         elevation: 3.0,
-        child: Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Spacer(
+                    flex: 1,
+                  ),
                   Expanded(
                     flex: 2,
                     child: TextField(
                       keyboardType: TextInputType.number,
-                      key: Key('Dress'),
-                      controller: _dressSizeController,
+                      key: Key('Monthly'),
+                      controller: _monthlyController,
                       style: TextStyle(color: Colors.black),
                       onChanged: (value) {
-                        setState(() => checkDressFee(
-                            double.parse(_dressSizeController.text)));
+                        setState(() {
+                          _monthlyFee = int.parse(_monthlyController.text);
+                        });
                       },
                       decoration: InputDecoration(
-                        hintText: "5.10",
+                        hintText: "400",
                         hintStyle: TextStyle(color: Colors.black26),
-                        labelText: "Height",
-                        labelStyle: TextStyle(color: Colors.black),
+                        labelText: "Per Month",
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12.5,
+                        ),
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      "x",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w700, wordSpacing: 2.0),
+                    ),
+                  ),
                   Expanded(
+                    flex: 2,
+                    child: DropdownButton(
+                      items: _monthsNo.map((int value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value.toString()),
+                        );
+                      }).toList(),
+                      value: _monthsNoSelected,
+                      onChanged: (value) {
+                        _monthsNoSelected = value;
+                        setState(() {
+                          _subTotal = _monthlyFee * value;
+                        });
+                      },
+                    ),
+                  ),
+                  Spacer(
                     flex: 1,
-                    child: Text("Size : $_sizeNo"),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // spcheck
-                  Row(
-                    children: [
-                      Checkbox(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: _spCheck,
-                        onChanged: (bool value) {
-                          if (value == true) {
-                            _subTotal = _subTotal + 60;
-                          } else {
-                            _subTotal = _subTotal - 60;
-                          }
-                          setState(() {
-                            _spCheck = value;
-                          });
-                        },
-                      ),
-                      Text("SP")
-                    ],
-                  ),
-                  // vspcheck
-                  Row(
-                    children: [
-                      Checkbox(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: _vspCheck,
-                        onChanged: (bool value) {
-                          if (value == true) {
-                            _subTotal = _subTotal + 90;
-                          } else {
-                            _subTotal = _subTotal - 90;
-                          }
-                          setState(() {
-                            _vspCheck = value;
-                          });
-                        },
-                      ),
-                      Text("VSP")
-                    ],
-                  ),
-                  // vvspcheck
-                  Row(
-                    children: [
-                      Checkbox(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: _vvspCheck,
-                        onChanged: (bool value) {
-                          if (value == true) {
-                            _subTotal = _subTotal + 120;
-                          } else {
-                            _subTotal = _subTotal - 120;
-                          }
-                          setState(() {
-                            _vvspCheck = value;
-                          });
-                        },
-                      ),
-                      Text("VVSP")
-                    ],
                   )
                 ],
-              )
-            ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+//
+// EXAMINATION FEE
+//
+  Visibility buildExaminationFee() {
+    return Visibility(
+      visible: _examinationVisible,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Center(
+            child: _entry.id != null
+                ? Text(_entry.detailedReason)
+                : checkExamination(),
           ),
         ),
       ),
     );
   }
 
+//
+// EQUIP FEE
+//
   Visibility buildEquipmentFee() {
     return Visibility(
       visible: _equipVisible,
@@ -606,100 +608,121 @@ class _AddEntryState extends State<AddEntry> {
     );
   }
 
-  Visibility buildExaminationFee() {
+//
+// DRESS FEE
+//
+  Visibility buildDressFee() {
     return Visibility(
-      visible: _examinationVisible,
+      visible: _dressVisible,
       child: Card(
+        elevation: 3.0,
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Center(
-            child: _entry.id != null
-                ? Text(_entry.detailedReason)
-                : checkExamination(),
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      key: Key('Dress'),
+                      controller: _dressSizeController,
+                      style: TextStyle(color: Colors.black),
+                      onChanged: (value) {
+                        setState(() => checkDressFee(
+                            double.parse(_dressSizeController.text)));
+                      },
+                      decoration: InputDecoration(
+                        hintText: "5.10",
+                        hintStyle: TextStyle(color: Colors.black26),
+                        labelText: "Height",
+                        labelStyle: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text("Size : $_sizeNo"),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // spcheck
+                  Row(
+                    children: [
+                      Checkbox(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: _spCheck,
+                        onChanged: (bool value) {
+                          if (value == true) {
+                            _subTotal = _subTotal + 60;
+                          } else {
+                            _subTotal = _subTotal - 60;
+                          }
+                          setState(() {
+                            _spCheck = value;
+                          });
+                        },
+                      ),
+                      Text("SP")
+                    ],
+                  ),
+                  // vspcheck
+                  Row(
+                    children: [
+                      Checkbox(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: _vspCheck,
+                        onChanged: (bool value) {
+                          if (value == true) {
+                            _subTotal = _subTotal + 90;
+                          } else {
+                            _subTotal = _subTotal - 90;
+                          }
+                          setState(() {
+                            _vspCheck = value;
+                          });
+                        },
+                      ),
+                      Text("VSP")
+                    ],
+                  ),
+                  // vvspcheck
+                  Row(
+                    children: [
+                      Checkbox(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: _vvspCheck,
+                        onChanged: (bool value) {
+                          if (value == true) {
+                            _subTotal = _subTotal + 120;
+                          } else {
+                            _subTotal = _subTotal - 120;
+                          }
+                          setState(() {
+                            _vvspCheck = value;
+                          });
+                        },
+                      ),
+                      Text("VVSP")
+                    ],
+                  )
+                ],
+              )
+            ],
           ),
         ),
       ),
     );
   }
 
-  Visibility buildMonthlyFee() {
-    return Visibility(
-      visible: _monthlyVisible,
-      child: Card(
-        elevation: 3.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Spacer(
-                    flex: 1,
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      key: Key('Monthly'),
-                      controller: _monthlyController,
-                      style: TextStyle(color: Colors.black),
-                      onChanged: (value) {
-                        setState(() {
-                          _monthlyFee = int.parse(_monthlyController.text);
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: "400",
-                        hintStyle: TextStyle(color: Colors.black26),
-                        labelText: "Per Month",
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(
-                      "x",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700, wordSpacing: 2.0),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: DropdownButton(
-                      items: _monthsNo.map((int value) {
-                        return DropdownMenuItem(
-                          value: value,
-                          child: Text(value.toString()),
-                        );
-                      }).toList(),
-                      value: _monthsNoSelected,
-                      onChanged: (value) {
-                        _monthsNoSelected = value;
-                        setState(() {
-                          _subTotal = _monthlyFee * value;
-                        });
-                      },
-                    ),
-                  ),
-                  invoiceText(),
-                  Spacer(
-                    flex: 1,
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
+//
+// OTHERS
+//
   Visibility buildOthers() {
     return Visibility(
       visible: _otherVisible,
@@ -772,9 +795,14 @@ class _AddEntryState extends State<AddEntry> {
 //
 // Invoice data
 //
-  Widget invoiceText() {
-    return _payType == 1
-        ? TextField(
+  Visibility invoiceCard() {
+    return Visibility(
+      visible: _payTypeVisible,
+      child: Card(
+        elevation: 3.0,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
             keyboardType: TextInputType.number,
             key: Key('Invoice'),
             controller: _monthlyIndirectController,
@@ -783,9 +811,9 @@ class _AddEntryState extends State<AddEntry> {
               _invoiceId = int.parse(value);
             },
             decoration: InputDecoration(
-              hintText: "Reason",
+              hintText: "565452",
               hintStyle: TextStyle(color: Colors.black26),
-              labelText: "Reason",
+              labelText: "Invoice no.",
               labelStyle: TextStyle(color: Colors.black),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -795,8 +823,10 @@ class _AddEntryState extends State<AddEntry> {
                 ),
               ),
             ),
-          )
-        : null;
+          ),
+        ),
+      ),
+    );
   }
 
   void checkNUpdate() {

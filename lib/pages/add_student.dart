@@ -95,11 +95,6 @@ class _AddStudentState extends State<AddStudent> {
   @override
   void initState() {
     super.initState();
-    _currentMonthSelected = _months[0];
-    _currentBeltSelected = _belts[0];
-    _currentGenderSelected = _genders[0];
-    _currentMonthSelectedFrom = _months[0];
-    _currentMemberSelected = _memberQ[1];
     if (_student.id != null) {
       List temp, temp1;
       temp = _student.fee.split("/");
@@ -115,6 +110,11 @@ class _AddStudentState extends State<AddStudent> {
       _currentMemberSelected = _memberQ[_student.member];
     } else {
       branchController.text = branch;
+      _currentMonthSelected = _months[0];
+      _currentBeltSelected = _belts[0];
+      _currentGenderSelected = _genders[0];
+      _currentMonthSelectedFrom = _months[0];
+      _currentMemberSelected = _memberQ[1];
     }
   }
 

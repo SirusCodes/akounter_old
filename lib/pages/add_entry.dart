@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:karate/databases/entry_data.dart';
 import 'package:karate/databases/student_data.dart';
+import 'package:karate/models/branch.dart';
 import 'package:karate/models/entry.dart';
 import 'package:karate/models/student.dart';
 import 'package:karate/pages/lists/entry_list.dart';
@@ -10,21 +11,14 @@ import 'package:sqflite/sqflite.dart';
 
 class AddEntry extends StatefulWidget {
   final Student _student;
-  final String _branch, _title;
-  final int _aGreen, _bGreen, _member, _payType;
   final Entry _entry;
-  AddEntry(this._student, this._branch, this._aGreen, this._bGreen,
-      this._member, this._payType, this._entry, this._title);
+  final Branch branch;
+  final String _title;
+  AddEntry(this._student, this.branch, this._entry, this._title);
+
   @override
-  _AddEntryState createState() => _AddEntryState(
-      this._student,
-      this._branch,
-      this._aGreen,
-      this._bGreen,
-      this._member,
-      this._payType,
-      this._entry,
-      this._title);
+  _AddEntryState createState() =>
+      _AddEntryState(this._student, this.branch, this._entry, this._title);
 }
 
 class _AddEntryState extends State<AddEntry> {
@@ -33,7 +27,7 @@ class _AddEntryState extends State<AddEntry> {
       _reason,
       _detailedReason,
       _dateEntry,
-      _branch,
+      _branchentry,
       _fee,
       _fromFee,
       _advBalEntry,
@@ -53,11 +47,13 @@ class _AddEntryState extends State<AddEntry> {
 
   // database req
   Entry _entry = Entry(_roll, _name, _totalEntry, _subTotalEntry, _advBalEntry,
-      _reason, _detailedReason, _dateEntry, _branch, _uint8list);
+      _reason, _detailedReason, _dateEntry, _branchentry, _uint8list);
   Student _student = Student(_rollStd, _nameStd, _dob, _branchStd, _belt, _fee,
       _fromFee, _num, _gender, _advBalStd, _memberStd);
   DatabaseEntry _entrydata = DatabaseEntry();
   DatabaseStudent _databaseStudent = DatabaseStudent();
+
+  Branch _branch;
 
   bool _monthlyVisible = true,
       _examinationVisible = false,
@@ -76,8 +72,7 @@ class _AddEntryState extends State<AddEntry> {
       _vvspCheck = false,
       _advBalCheck = false;
 
-  String branch,
-      _title,
+  String _title,
       _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
       _currentReason = "";
 
@@ -85,13 +80,9 @@ class _AddEntryState extends State<AddEntry> {
       _subTotal = 0,
       _monthsNoSelected,
       _equipSubTotal = 0,
-      _aGreen,
-      _bGreen,
-      _member,
-      _monthlyFee,
       _sizeNo = 12,
-      _payType,
-      _invoiceId;
+      _invoiceId,
+      _monthlyFee;
 
   TextEditingController _monthlyController = TextEditingController();
   TextEditingController _advBalController = TextEditingController();
@@ -147,8 +138,7 @@ class _AddEntryState extends State<AddEntry> {
     checkNUpdate();
   }
 
-  _AddEntryState(this._student, this.branch, this._aGreen, this._bGreen,
-      this._member, this._payType, this._entry, this._title);
+  _AddEntryState(this._student, this._branch, this._entry, this._title);
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +152,7 @@ class _AddEntryState extends State<AddEntry> {
     _total = _subTotal - _student.advBal + int.parse(_advBalController.text);
 
     // innvoice getter
-    _payTypeVisible = _payType == 1 && _monthlyVisible ? true : false;
+    _payTypeVisible = _branch.payType == 1 && _monthlyVisible ? true : false;
 
     return Scaffold(
       appBar: AppBar(
@@ -176,11 +166,10 @@ class _AddEntryState extends State<AddEntry> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => EntryList(
-                      Student(0, "", '', branch, 0, "", "", "", 0, 0, 0),
-                      branch,
-                      _aGreen,
-                      _bGreen,
-                      _member),
+                        Student(
+                            0, "", '', _branch.name, 0, "", "", "", 0, 0, 0),
+                        _branch,
+                      ),
                 ),
               );
             },
@@ -241,9 +230,7 @@ class _AddEntryState extends State<AddEntry> {
               //
               GestureDetector(
                 onTap: () => showSearch(
-                    context: context,
-                    delegate: StudentSearchEntry(
-                        branch, _aGreen, _bGreen, _member, _payType)),
+                    context: context, delegate: StudentSearchEntry(_branch)),
                 child: Card(
                   elevation: 3.0,
                   child: Column(
@@ -518,9 +505,9 @@ class _AddEntryState extends State<AddEntry> {
                       value: _glovesCheck,
                       onChanged: (bool value) {
                         if (value == true) {
-                          _equipSubTotal = _equipSubTotal + 450;
+                          _equipSubTotal = _equipSubTotal + _branch.gloves;
                         } else {
-                          _equipSubTotal = _equipSubTotal - 450;
+                          _equipSubTotal = _equipSubTotal - _branch.gloves;
                         }
                         setState(() {
                           _subTotal = _equipSubTotal;
@@ -539,9 +526,9 @@ class _AddEntryState extends State<AddEntry> {
                       value: _kickpadCheck,
                       onChanged: (bool value) {
                         if (value == true) {
-                          _equipSubTotal = _equipSubTotal + 550;
+                          _equipSubTotal = _equipSubTotal + _branch.kickpad;
                         } else {
-                          _equipSubTotal = _equipSubTotal - 550;
+                          _equipSubTotal = _equipSubTotal - _branch.kickpad;
                         }
                         setState(() {
                           _subTotal = _equipSubTotal;
@@ -566,9 +553,9 @@ class _AddEntryState extends State<AddEntry> {
                       value: _chestguardCheck,
                       onChanged: (bool value) {
                         if (value == true) {
-                          _equipSubTotal = _equipSubTotal + 750;
+                          _equipSubTotal = _equipSubTotal + _branch.chestguard;
                         } else {
-                          _equipSubTotal = _equipSubTotal - 750;
+                          _equipSubTotal = _equipSubTotal - _branch.chestguard;
                         }
                         setState(() {
                           _subTotal = _equipSubTotal;
@@ -587,9 +574,9 @@ class _AddEntryState extends State<AddEntry> {
                       value: _footguardCheck,
                       onChanged: (bool value) {
                         if (value == true) {
-                          _equipSubTotal = _equipSubTotal + 850;
+                          _equipSubTotal = _equipSubTotal + _branch.footguard;
                         } else {
-                          _equipSubTotal = _equipSubTotal - 850;
+                          _equipSubTotal = _equipSubTotal - _branch.footguard;
                         }
                         setState(() {
                           _subTotal = _equipSubTotal;
@@ -659,9 +646,9 @@ class _AddEntryState extends State<AddEntry> {
                         value: _spCheck,
                         onChanged: (bool value) {
                           if (value == true) {
-                            _subTotal = _subTotal + 60;
+                            _subTotal = _subTotal + _branch.spdress;
                           } else {
-                            _subTotal = _subTotal - 60;
+                            _subTotal = _subTotal - _branch.spdress;
                           }
                           setState(() {
                             _spCheck = value;
@@ -679,9 +666,9 @@ class _AddEntryState extends State<AddEntry> {
                         value: _vspCheck,
                         onChanged: (bool value) {
                           if (value == true) {
-                            _subTotal = _subTotal + 90;
+                            _subTotal = _subTotal + _branch.vspdress;
                           } else {
-                            _subTotal = _subTotal - 90;
+                            _subTotal = _subTotal - _branch.vspdress;
                           }
                           setState(() {
                             _vspCheck = value;
@@ -699,9 +686,9 @@ class _AddEntryState extends State<AddEntry> {
                         value: _vvspCheck,
                         onChanged: (bool value) {
                           if (value == true) {
-                            _subTotal = _subTotal + 120;
+                            _subTotal = _subTotal + _branch.vvspdress;
                           } else {
-                            _subTotal = _subTotal - 120;
+                            _subTotal = _subTotal - _branch.vvspdress;
                           }
                           setState(() {
                             _vvspCheck = value;
@@ -835,19 +822,19 @@ class _AddEntryState extends State<AddEntry> {
     if (_student.member != 0) {
       // if student is not member
       if (_student.belt <= 3) {
-        _monthlyFee = _bGreen;
+        _monthlyFee = _branch.bGreen;
         _monthlyController.text = _monthlyFee.toString();
       } else {
-        _monthlyFee = _aGreen;
+        _monthlyFee = _branch.aGreen;
         _monthlyController.text = _monthlyFee.toString();
       }
     } else {
       // if student is a member
       if (_student.belt <= 3) {
-        _monthlyFee = _bGreen - _member;
+        _monthlyFee = _branch.bGreen - _branch.member;
         _monthlyController.text = _monthlyFee.toString();
       } else {
-        _monthlyFee = _aGreen - _member;
+        _monthlyFee = _branch.aGreen - _branch.member;
         _monthlyController.text = _monthlyFee.toString();
       }
     }
@@ -949,7 +936,7 @@ class _AddEntryState extends State<AddEntry> {
       case 'Card':
         _equipVisible = _examinationVisible =
             _otherVisible = _monthlyVisible = _dressVisible = false;
-        _subTotal = 30;
+        _subTotal = _branch.card;
         break;
 
       case "Others":
@@ -972,43 +959,43 @@ class _AddEntryState extends State<AddEntry> {
   void checkDressFee(double size) {
     if (size <= 3.02) {
       _sizeNo = 12;
-      setState(() => _subTotal = 590);
+      setState(() => _subTotal = _branch.dress12);
     } else if (size <= 3.05) {
       _sizeNo = 13;
-      setState(() => _subTotal = 600);
+      setState(() => _subTotal = _branch.dress13);
     } else if (size <= 3.08) {
       _sizeNo = 14;
-      setState(() => _subTotal = 630);
+      setState(() => _subTotal = _branch.dress14);
     } else if (size <= 3.11) {
       _sizeNo = 15;
-      setState(() => _subTotal = 660);
+      setState(() => _subTotal = _branch.dress15);
     } else if (size <= 4.02) {
       _sizeNo = 16;
-      setState(() => _subTotal = 690);
+      setState(() => _subTotal = _branch.dress16);
     } else if (size <= 4.05) {
       _sizeNo = 17;
-      setState(() => _subTotal = 720);
+      setState(() => _subTotal = _branch.dress17);
     } else if (size <= 4.08) {
       _sizeNo = 18;
-      setState(() => _subTotal = 750);
+      setState(() => _subTotal = _branch.dress18);
     } else if (size <= 4.11) {
       _sizeNo = 19;
-      setState(() => _subTotal = 780);
+      setState(() => _subTotal = _branch.dress19);
     } else if (size <= 5.02) {
       _sizeNo = 20;
-      setState(() => _subTotal = 810);
+      setState(() => _subTotal = _branch.dress20);
     } else if (size <= 5.05) {
       _sizeNo = 21;
-      setState(() => _subTotal = 840);
+      setState(() => _subTotal = _branch.dress21);
     } else if (size <= 5.08) {
       _sizeNo = 22;
-      setState(() => _subTotal = 870);
+      setState(() => _subTotal = _branch.dress22);
     } else if (size <= 5.11) {
       _sizeNo = 23;
-      setState(() => _subTotal = 900);
+      setState(() => _subTotal = _branch.dress23);
     } else if (size <= 6.02) {
       _sizeNo = 24;
-      setState(() => _subTotal = 930);
+      setState(() => _subTotal = _branch.dress24);
     }
   }
 
@@ -1016,31 +1003,31 @@ class _AddEntryState extends State<AddEntry> {
   void checkExamFee(int belt) {
     switch (belt) {
       case 0:
-        setState(() => _subTotal = 500);
+        setState(() => _subTotal = _branch.eOrange);
         break;
       case 1:
-        setState(() => _subTotal = 550);
+        setState(() => _subTotal = _branch.eYellow);
         break;
       case 2:
-        setState(() => _subTotal = 600);
+        setState(() => _subTotal = _branch.eGreen);
         break;
       case 3:
-        setState(() => _subTotal = 650);
+        setState(() => _subTotal = _branch.eBlue);
         break;
       case 4:
-        setState(() => _subTotal = 700);
+        setState(() => _subTotal = _branch.ePurple);
         break;
       case 5:
-        setState(() => _subTotal = 800);
+        setState(() => _subTotal = _branch.eBrown3);
         break;
       case 6:
-        setState(() => _subTotal = 1000);
+        setState(() => _subTotal = _branch.eBrown2);
         break;
       case 7:
-        setState(() => _subTotal = 1200);
+        setState(() => _subTotal = _branch.eBrown1);
         break;
       case 8:
-        setState(() => _subTotal = 8500);
+        setState(() => _subTotal = _branch.eBlack);
         break;
     }
   }
@@ -1067,13 +1054,13 @@ class _AddEntryState extends State<AddEntry> {
     _entry.name = _student.name;
     _entry.total = _total;
     _entry.subTotal = _subTotal;
-    if (_payType == 0) {
+    if (_branch.payType == 0) {
       _entry.reason = _currentReason;
     } else {
       _entry.reason = "$_currentReason($_invoiceId)";
     }
     _entry.date = _date;
-    _entry.branch = branch;
+    _entry.branch = _branch.name;
     _entry.pending = "0";
 
     getDReason(_currentReason);
@@ -1191,11 +1178,10 @@ class _AddEntryState extends State<AddEntry> {
 // search
 //
 class StudentSearchEntry extends SearchDelegate<String> {
-  StudentSearchEntry(
-      this.branch, this._aGreen, this._bGreen, this._member, this._payType);
+  StudentSearchEntry(this.branch);
   List<Student> studentList, updatedList;
-  int count, _aGreen, _bGreen, _member, _payType;
-  String branch;
+
+  Branch branch;
 
   static String _name,
       _reason,
@@ -1245,8 +1231,8 @@ class StudentSearchEntry extends SearchDelegate<String> {
       updateStudentList();
     }
 
-    updatedList = branch != ""
-        ? studentList.where((p) => p.branch == branch).toList()
+    updatedList = branch.name != ""
+        ? studentList.where((p) => p.branch == branch.name).toList()
         : studentList;
 
     List<Student> suggestedList = query.isEmpty
@@ -1268,8 +1254,8 @@ class StudentSearchEntry extends SearchDelegate<String> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddEntry(suggestedList[index], branch,
-                      _aGreen, _bGreen, _member, _payType, _entry, "Add Entry"),
+                  builder: (context) => AddEntry(
+                      suggestedList[index], branch, _entry, "Add Entry"),
                 ),
               );
             },

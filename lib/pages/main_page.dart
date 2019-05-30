@@ -15,9 +15,7 @@ import 'package:karate/pages/add_student.dart';
 
 class MainPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _MainPageState();
-  }
+  State<StatefulWidget> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
@@ -26,7 +24,6 @@ class _MainPageState extends State<MainPage> {
   static int _bGreenData, _aGreenData, _memberData, _count, _payTypeData;
   TextEditingController addBranchController = TextEditingController();
   DatabaseBranch data = DatabaseBranch();
-  int count, _aGreen, _bGreen, _member, _payType;
   int index;
   var selectedBranch = "";
   List<Branch> branchName;
@@ -163,8 +160,7 @@ class _MainPageState extends State<MainPage> {
                             ? Navigator.pushNamed(context, "SelBrnch")
                             : showSearch(
                                 context: context,
-                                delegate: StudentSearchEntry(selectedBranch,
-                                    _aGreen, _bGreen, _member, _payType),
+                                delegate: StudentSearchEntry(_branchData),
                               );
                       }, //   action here
                     ),
@@ -224,10 +220,6 @@ class _MainPageState extends State<MainPage> {
                               print(branchName[index].eOrange);
                               _branchData = branchName[index];
                               changeBranch(branchName[index].name);
-                              _aGreen = branchName[index].aGreen;
-                              _bGreen = branchName[index].bGreen;
-                              _member = branchName[index].member;
-                              _payType = branchName[index].payType;
                               newText(branchName[index].name, Colors.black);
                             },
                           );
@@ -317,8 +309,7 @@ class _MainPageState extends State<MainPage> {
                   ? Navigator.pushNamed(context, "SelBrnch")
                   : showSearch(
                       context: context,
-                      delegate: StudentSearchEntry(
-                          selectedBranch, _aGreen, _bGreen, _member, _payType));
+                      delegate: StudentSearchEntry(_branchData));
             },
           ),
           //expansion for lists
@@ -351,12 +342,10 @@ class _MainPageState extends State<MainPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => EntryList(
-                          Student(null, "", '', selectedBranch, null, null,
-                              null, "", null, null, null),
-                          selectedBranch,
-                          _aGreen,
-                          _bGreen,
-                          _member),
+                            Student(null, "", '', selectedBranch, null, null,
+                                null, "", null, null, null),
+                            _branchData,
+                          ),
                     ),
                   );
                 },
@@ -388,7 +377,6 @@ class _MainPageState extends State<MainPage> {
       branchListFuture.then((list) {
         setState(() {
           this.branchName = list;
-          this.count = list.length;
         });
       });
     });

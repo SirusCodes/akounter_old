@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:karate/databases/entry_data.dart';
 import 'package:flutter/material.dart';
 import 'package:karate/databases/student_data.dart';
+import 'package:karate/models/branch.dart';
 import 'package:karate/models/entry.dart';
 import 'package:karate/models/student.dart';
 import 'package:karate/pages/add_entry.dart';
@@ -10,22 +11,13 @@ import 'package:sqflite/sqlite_api.dart';
 
 class EntryList extends StatefulWidget {
   final Student _student;
-  final String _branch;
-  final int _aGreen, _bGreen, _member;
-  EntryList(
-    this._student,
-    this._branch,
-    this._aGreen,
-    this._bGreen,
-    this._member,
-  );
+  final Branch _branch;
+
+  EntryList(this._student, this._branch);
   @override
   _EntryListState createState() => _EntryListState(
         this._student,
         this._branch,
-        this._aGreen,
-        this._bGreen,
-        this._member,
       );
 }
 
@@ -35,10 +27,10 @@ class _EntryListState extends State<EntryList> {
 
   DatabaseEntry _data = DatabaseEntry();
   Entry entry;
-  String _branch,
-      _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString();
+  Branch _branch;
+  String _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString();
   Student _student;
-  int _aGreen, _bGreen, _member, _payType;
+
   Student _studentUpdate = Student(
     _roll,
     _name,
@@ -52,12 +44,10 @@ class _EntryListState extends State<EntryList> {
     _advBal,
     _memberStud,
   );
+
   _EntryListState(
     this._student,
     this._branch,
-    this._aGreen,
-    this._bGreen,
-    this._member,
   );
 
   DatabaseStudent _databaseStudent = DatabaseStudent();
@@ -70,7 +60,7 @@ class _EntryListState extends State<EntryList> {
       updateEntryList();
     }
     updatedList = _branch != null
-        ? entryList.where((p) => p.branch == _branch).toList()
+        ? entryList.where((p) => p.branch == _branch.name).toList()
         : entryList;
 
     dateList = updatedList.where((date) => date.date == _date).toList();
@@ -83,7 +73,7 @@ class _EntryListState extends State<EntryList> {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              showSearch(context: context, delegate: EntrySearch(_branch));
+              showSearch(context: context, delegate: EntrySearch(_branch.name));
             },
           )
         ],
@@ -282,8 +272,8 @@ class _EntryListState extends State<EntryList> {
                       context,
                       MaterialPageRoute(
                         builder: (context) {
-                          return AddEntry(_student, _branch, _aGreen, _bGreen,
-                              _member, _payType, entry, "Edit Entry");
+                          return AddEntry(
+                              _student, _branch, entry, "Edit Entry");
                         },
                       ),
                     );
@@ -301,14 +291,16 @@ class _EntryListState extends State<EntryList> {
     int _month, _year;
 
     if (_entry.advBal != "0") {
-      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, _branch);
+      _studentUpdate =
+          await _databaseStudent.getStudent(_entry.roll, _branch.name);
       _studentUpdate.advBal = 0;
       _databaseStudent.updateStudent(_studentUpdate);
     }
 
     if (_entry.reason.startsWith("Monthly")) {
       temp = _entry.detailedReason.split(",");
-      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, _branch);
+      _studentUpdate =
+          await _databaseStudent.getStudent(_entry.roll, _branch.name);
       List temp1 = _studentUpdate.fee.split("/");
 
       print(1);
@@ -327,7 +319,8 @@ class _EntryListState extends State<EntryList> {
       print(_studentUpdate.fee);
       _databaseStudent.updateStudent(_studentUpdate);
     } else if (_entry.reason == "Examination") {
-      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, _branch);
+      _studentUpdate =
+          await _databaseStudent.getStudent(_entry.roll, _branch.name);
       _studentUpdate.belt--;
       _databaseStudent.updateStudent(_studentUpdate);
     }

@@ -300,6 +300,12 @@ class _EntryListState extends State<EntryList> {
 
     int _month, _year;
 
+    if (_entry.advBal != "0") {
+      _studentUpdate = await _databaseStudent.getStudent(_entry.roll, _branch);
+      _studentUpdate.advBal = 0;
+      _databaseStudent.updateStudent(_studentUpdate);
+    }
+
     if (_entry.reason.startsWith("Monthly")) {
       temp = _entry.detailedReason.split(",");
       _studentUpdate = await _databaseStudent.getStudent(_entry.roll, _branch);

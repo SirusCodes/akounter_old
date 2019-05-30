@@ -221,6 +221,7 @@ class _MainPageState extends State<MainPage> {
                               context, "${branchName[index].name} is selected");
                           setState(
                             () {
+                              print(branchName[index].eOrange);
                               _branchData = branchName[index];
                               changeBranch(branchName[index].name);
                               _aGreen = branchName[index].aGreen;

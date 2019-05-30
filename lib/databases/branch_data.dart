@@ -45,7 +45,10 @@ class DatabaseBranch {
 
   void _createDb(Database db, int newVersion) async {
     await db.execute(
-        'CREATE TABLE $branchTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT,$colBGreen INTEGER,$colAGreen INTEGER,$colMember INTEGER,$colCount INTEGER,$colPayType INTEGER)');
+        'CREATE TABLE $branchTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colName TEXT,$colBGreen INTEGER,$colAGreen INTEGER,$colMember INTEGER,$colCount INTEGER,$colPayType INTEGER,' +
+            'eOrange INTEGER,eYellow INTEGER,eGreen INTEGER,eBlue INTEGER,ePurple INTEGER,eBrown3 INTEGER,eBrown2 INTEGER,eBrown1 INTEGER,eBlack INTEGER,' +
+            'kickpad INTEGER,gloves INTEGER,chestguard INTEGER,footguard INTEGER,card INTEGER,' +
+            'dress12 INTEGER,dress13 INTEGER,dress14 INTEGER,dress15 INTEGER,dress16 INTEGER,dress17 INTEGER,dress18 INTEGER,dress19 INTEGER,dress20 INTEGER,dress21 INTEGER,dress22 INTEGER,dress23 INTEGER,dress24 INTEGER,spdress INTEGER,vspdress INTEGER,vvspdress INTEGER)');
   }
 
   //fetching data from database

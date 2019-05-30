@@ -224,15 +224,10 @@ class _ExpoImpoState extends State<ExpoImpo> {
       String csv = file.readAsStringSync();
       final res = CsvToListConverter().convert(csv, shouldParseNumbers: false);
 
-      // update branch counter
       List<Branch> branchName =
           branchList.where((p) => p.name == branch).toList();
       _branch = branchName[0];
-      _branch.count += res.length;
-      print(_branch.count);
-      await _databaseBranch.updateName(_branch);
 
-      // print(res);
       for (int i = 1; i <= res.length; i++) {
         Student student = Student(_rollStd, _nameStd, _dob, _branchStd, _belt,
             _fee, _fromFee, _num, _gender, _advBalStd, _memberStd);
@@ -250,9 +245,16 @@ class _ExpoImpoState extends State<ExpoImpo> {
         student.advBal = int.parse(row[9]);
         student.member = int.parse(row[10]);
         _databaseStudent.insertStudent(student);
-
+        // _branch.count++;
+        print(student.roll);
         print("added ${student.name}");
       }
+
+      // update branch counter
+
+      _branch.count = _branch.count + res.length;
+      print(_branch.count);
+      await _databaseBranch.updateName(_branch);
     }
 
     _showSnackBar(context, "File is Imported");

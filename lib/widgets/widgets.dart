@@ -13,10 +13,91 @@ Widget cAppBar(context, String title) {
   );
 }
 
-// SnackBar cSnackBar(String somewords) {
-//   return SnackBar(
-//     content: Text(somewords),
-//     duration: Duration(seconds: 1),
-//   );
-  
-// }
+Widget cTextField(TextEditingController controller, TextInputType keyboardType,
+    Function validator, Function onSaved, BuildContext context) {
+  return TextFormField(
+    keyboardType: keyboardType,
+    style: TextStyle(color: Theme.of(context).primaryColor),
+    controller: controller,
+    validator: validator,
+    onSaved: onSaved,
+    decoration: InputDecoration(
+      hintText: "400",
+      hintStyle: TextStyle(color: Theme.of(context).primaryColor),
+      labelText: "After Green",
+      labelStyle: TextStyle(color: Theme.of(context).primaryColor),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        borderSide: BorderSide(
+          color: Colors.black,
+          width: 10.0,
+        ),
+      ),
+    ),
+  );
+}
+
+class CTextField extends StatelessWidget {
+  CTextField(
+      {this.label,
+      this.hint,
+      this.controller,
+      this.keyboardType,
+      this.validator,
+      this.onSaved});
+  final String label, hint;
+  final TextEditingController controller;
+  final TextInputType keyboardType;
+  final Function validator;
+  final Function onSaved;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      keyboardType: keyboardType,
+      style: TextStyle(color: Theme.of(context).primaryColor),
+      controller: controller,
+      validator: validator,
+      onSaved: onSaved,
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Theme.of(context).primaryColor),
+        labelText: label,
+        labelStyle: TextStyle(color: Theme.of(context).primaryColor),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          borderSide: BorderSide(
+            color: Colors.black,
+            width: 10.0,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CTextNumericField extends StatelessWidget {
+  CTextNumericField({this.controller, this.onSaved, this.label, this.hint});
+  final String label, hint;
+  final TextEditingController controller;
+
+  final Function onSaved;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: CTextField(
+        controller: controller,
+        label: label,
+        onSaved: onSaved,
+        hint: hint,
+        validator: (value) {
+          if (value <= 0 || value == null) {
+            return "Incorrect value";
+          }
+        },
+        keyboardType: TextInputType.number,
+      ),
+    );
+  }
+}

@@ -28,7 +28,7 @@ class SelBrnch extends StatelessWidget {
               Container(
                 width: 300.0,
                 child: Text(
-                  "v1.4",
+                  "v1.5",
                   textAlign: TextAlign.right,
                 ),
               )

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:karate/databases/branch_data.dart';
@@ -500,11 +501,12 @@ class _AddStudentState extends State<AddStudent> {
 
   //snackbar
   void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 400),
-    );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    Flushbar(
+      aroundPadding: EdgeInsets.all(8.0),
+      borderRadius: 8,
+      message: message,
+      duration: Duration(seconds: 2),
+    )..show(context);
   }
 
   //belt to belt no.

@@ -921,7 +921,7 @@ class _AddBranchState extends State<AddBranch> {
   void _showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(
       content: Text(message),
-      duration: Duration(milliseconds: 400),
+      duration: Duration(seconds: 2),
     );
     _addBranchScaffoldKey.currentState.showSnackBar(snackBar);
   }

@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:karate/databases/branch_data.dart';
@@ -244,7 +245,7 @@ class _MainPageState extends State<MainPage> {
                   Container(
                     width: 300.0,
                     child: Text(
-                      "v1.4",
+                      "v1.5",
                       textAlign: TextAlign.right,
                     ),
                   )
@@ -384,11 +385,12 @@ class _MainPageState extends State<MainPage> {
 
   // show snackbar
   void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: Duration(milliseconds: 400),
-    );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    Flushbar(
+      aroundPadding: EdgeInsets.all(8.0),
+      borderRadius: 8,
+      message: message,
+      duration: Duration(seconds: 2),
+    )..show(context);
   }
 
   void navigateToAddBranch(Branch branch) async {

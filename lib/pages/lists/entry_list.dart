@@ -6,7 +6,6 @@ import 'package:karate/databases/student_data.dart';
 import 'package:karate/models/branch.dart';
 import 'package:karate/models/entry.dart';
 import 'package:karate/models/student.dart';
-import 'package:karate/pages/add_entry.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class EntryList extends StatefulWidget {
@@ -267,16 +266,16 @@ class _EntryListState extends State<EntryList> {
                   ),
                   onPressed: () {
                     Navigator.pop(context);
-                    // Navigator.popAndPushNamed(context, "WrkPrgs");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return AddEntry(
-                              _student, _branch, entry, "Edit Entry");
-                        },
-                      ),
-                    );
+                    Navigator.popAndPushNamed(context, "WrkPrgs");
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) {
+                    //       return AddEntry(
+                    //           _student, _branch, entry, "Edit Entry");
+                    //     },
+                    //   ),
+                    // );
                   },
                 )
               ],

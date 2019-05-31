@@ -74,6 +74,7 @@ class _AddEntryState extends State<AddEntry> {
 
   String _title,
       _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
+      _examDate = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
       _currentReason = "";
 
   int _total = 0,
@@ -472,10 +473,23 @@ class _AddEntryState extends State<AddEntry> {
       child: Card(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Center(
-            child: _entry.id != null
-                ? Text(_entry.detailedReason)
-                : checkExamination(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Center(
+                child: _entry.id != null
+                    ? Text(_entry.detailedReason)
+                    : checkExamination(),
+              ),
+              Center(
+                child: RaisedButton(
+                  elevation: 3.0,
+                  color: Colors.white,
+                  child: Text(_examDate),
+                  onPressed: () => setState(() => _selectExamDate(context)),
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -1032,21 +1046,6 @@ class _AddEntryState extends State<AddEntry> {
     }
   }
 
-  //date selector
-  Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1960),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) {
-      setState(() {
-        _date = DateFormat("dd/MM/yyyy").format(picked);
-      });
-    }
-  }
-
   // save
   _save() async {
     int result;
@@ -1120,7 +1119,7 @@ class _AddEntryState extends State<AddEntry> {
         break;
       case 'Examination':
         _entry.detailedReason = _student.belt != 9
-            ? "${_belts[_student.belt]} ➟ ${_belts[_student.belt + 1]}"
+            ? "${_belts[_student.belt]} ➟ ${_belts[_student.belt + 1]}($_examDate)"
             : "Sorry fees after Dan 1 is not supported yet";
         _student.belt++;
         break;
@@ -1173,6 +1172,36 @@ class _AddEntryState extends State<AddEntry> {
     } else {
       _entry.detailedReason =
           "Height : ${_dressSizeController.text} ($_sizeNo)(Normal)";
+    }
+  }
+
+  //date selector
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _date = DateFormat("dd/MM/yyyy").format(picked);
+      });
+    }
+  }
+
+  //date exam selector
+  Future<Null> _selectExamDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _examDate = DateFormat("dd/MM/yyyy").format(picked);
+      });
     }
   }
 }

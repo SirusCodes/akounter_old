@@ -4,7 +4,7 @@ import 'package:karate/databases/entry_data.dart';
 import 'package:karate/databases/student_data.dart';
 import 'package:karate/models/entry.dart';
 import 'package:karate/models/student.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqlite_api.dart';
 
 class StudentDetail extends StatefulWidget {
   final Student _student;
@@ -59,7 +59,7 @@ class _StudentDetailState extends State<StudentDetail> {
       updateEntryList();
     }
 
-    updatedList = entryList;
+    updatedList = entryList.where((e) => e.branch == _student.branch).toList();
 
     return Scaffold(
       body: CustomScrollView(

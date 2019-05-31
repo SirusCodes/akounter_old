@@ -554,7 +554,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
       aroundPadding: EdgeInsets.all(8.0),
       borderRadius: 8,
       message: message,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(seconds: 2),
     )..show(context);
   }
 }

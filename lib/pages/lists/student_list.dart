@@ -4,6 +4,7 @@ import 'package:karate/databases/student_data.dart';
 import 'package:karate/models/branch.dart';
 import 'package:karate/models/student.dart';
 import 'package:karate/pages/add_student.dart';
+import 'package:karate/pages/student_details.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class StudentList extends StatefulWidget {
@@ -111,10 +112,14 @@ class _StudentListState extends State<StudentList> {
                 subtitle: Text(
                     "${this.updatedList[index].branch}  ${this.updatedList[index].number}  ${_belts[this.updatedList[index].belt]}  ${this.updatedList[index].fee}"),
                 onTap: () async {
-                  Student _student = await _data.getStudent(
-                      updatedList[index].roll, updatedList[index].branch);
-                  print(_student.name);
-                  _showSnapshot(updatedList[index]);
+                  print(this.updatedList[index].fee);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StudentDetail(updatedList[index]),
+                    ),
+                  );
+                  // _showSnapshot(updatedList[index]);
                 },
               ),
             );

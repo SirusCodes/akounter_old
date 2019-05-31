@@ -298,7 +298,7 @@ class _EntryListState extends State<EntryList> {
     }
 
     if (_entry.reason.startsWith("Monthly")) {
-      temp = _entry.detailedReason.split(",");
+      temp = _entry.detailedReason.split("/");
       _studentUpdate =
           await _databaseStudent.getStudent(_entry.roll, _branch.name);
       List temp1 = _studentUpdate.fee.split("/");
@@ -521,7 +521,7 @@ class EntrySearch extends SearchDelegate<String> {
     int _month, _year;
 
     if (_entry.reason.startsWith("Monthly")) {
-      temp = _entry.detailedReason.split(",");
+      temp = _entry.detailedReason.split("/");
       _studentUpdate = await _databaseStudent.getStudent(_entry.roll, branch);
       List temp1 = _studentUpdate.fee.split("/");
 

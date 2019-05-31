@@ -13,6 +13,7 @@ import 'package:simple_permissions/simple_permissions.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter_document_picker/flutter_document_picker.dart';
+import 'package:flushbar/flushbar.dart';
 
 class ExpoImpo extends StatefulWidget {
   final String branch;
@@ -93,26 +94,26 @@ class _ExpoImpoState extends State<ExpoImpo> {
           ListTile(
             title: Text("Import BackUp"),
             leading: Icon(Icons.file_download),
-            onTap: () => _importBackUp(),
+            onTap: () => _importBackUp(context),
           ),
           ListTile(
             enabled: _checkSelectBranch,
             title: Text("Import Student list"),
             leading: Icon(Icons.file_download),
-            onTap: () => _importStudentData(),
+            onTap: () => _importStudentData(context),
           ),
           ListTile(
               enabled: _checkSelectBranch,
               title: Text("Import Entry list"),
               leading: Icon(Icons.file_download),
-              onTap: () => _importEntryData()),
+              onTap: () => _importEntryData(context)),
           ListTile(
             enabled: _checkSelectBranch,
             title: Text("Create BackUp"),
             leading: Icon(Icons.file_upload),
             onTap: () {
               row.clear();
-              _getBackUp(branch);
+              _getBackUp(branch, context);
             },
           ),
           ListTile(
@@ -121,7 +122,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
               leading: Icon(Icons.file_upload),
               onTap: () {
                 row.clear();
-                _exportStudentData();
+                _exportStudentData(context);
               }),
           ListTile(
             enabled: _checkSelectBranch,
@@ -129,7 +130,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
             leading: Icon(Icons.file_upload),
             onTap: () {
               row.clear();
-              _exportEntryData();
+              _exportEntryData(context);
             },
           ),
         ],
@@ -169,7 +170,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   }
 
   // export student list
-  _exportStudentData() async {
+  _exportStudentData(BuildContext context) async {
     // location
     String fileName =
         "$filePath$branch(Students)-${DateFormat("dd-MM-yyyy-hh-mm").format(DateTime.now())}.csv";
@@ -206,7 +207,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   }
 
   // import student data
-  _importStudentData() async {
+  _importStudentData(BuildContext context) async {
     Branch _branch = Branch(
         _nameBranch, _bGreenData, _aGreenData, _memberData, _count, _payType);
 
@@ -228,19 +229,19 @@ class _ExpoImpoState extends State<ExpoImpo> {
           branchList.where((p) => p.name == branch).toList();
       _branch = branchName[0];
 
-      for (int i = 1; i <= res.length; i++) {
+      for (int i = 0; i <= res.length; i++) {
         Student student = Student(_rollStd, _nameStd, _dob, _branchStd, _belt,
             _fee, _fromFee, _num, _gender, _advBalStd, _memberStd);
 
         List<dynamic> row = res[i];
-        student.roll = _branch.count + i;
-        student.name = row[1];
-        student.dob = row[2];
-        student.number = row[3];
+        student.roll = row[0];
+        student.name = row[1].toString().trimLeft();
+        student.dob = row[2].toString().trimLeft();
+        student.number = row[3].toString().trimLeft();
         student.gender = int.parse(row[4]);
-        student.fee = row[5];
-        student.fromFee = row[6];
-        student.branch = branch;
+        student.fee = row[5].toString().trimLeft();
+        student.fromFee = row[6].toString().trimLeft();
+        student.branch = branch.toString().trimLeft();
         student.belt = int.parse(row[8]);
         student.advBal = int.parse(row[9]);
         student.member = int.parse(row[10]);
@@ -261,7 +262,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   }
 
   // export entry Data
-  _exportEntryData() {
+  _exportEntryData(BuildContext context) {
     // location
     String fileName =
         "$filePath$branch(Entry)-${DateFormat("dd-MM-yyyy-hh-mm").format(DateTime.now())}.csv";
@@ -296,7 +297,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   }
 
   // import entry data
-  _importEntryData() async {
+  _importEntryData(BuildContext context) async {
     FlutterDocumentPickerParams params = FlutterDocumentPickerParams(
       allowedFileExtensions: ['csv'],
     );
@@ -322,13 +323,13 @@ class _ExpoImpoState extends State<ExpoImpo> {
 
         List<dynamic> data = res[i];
         entry.roll = int.parse(data[0]);
-        entry.name = data[1];
-        entry.branch = branch;
-        entry.advBal = data[3];
-        entry.date = data[4];
-        entry.detailedReason = data[5];
-        entry.pending = data[6];
-        entry.reason = data[7];
+        entry.name = data[1].toString().trimLeft();
+        entry.branch = branch.toString().trimLeft();
+        entry.advBal = data[3].toString().trimLeft();
+        entry.date = data[4].toString().trimLeft();
+        entry.detailedReason = data[5].toString().trimLeft();
+        entry.pending = data[6].toString().trimLeft();
+        entry.reason = data[7].toString().trimLeft();
         entry.subTotal = int.parse(data[8]);
         entry.total = int.parse(data[9]);
         print(entry.name);
@@ -339,7 +340,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   }
 
   // create back up
-  _getBackUp(String branch) {
+  _getBackUp(String branch, BuildContext context) {
     // update lists
     _updateBranchList();
     _updateEntryList();
@@ -354,8 +355,11 @@ class _ExpoImpoState extends State<ExpoImpo> {
     List<Branch> branchName =
         branchList.where((p) => p.name == branch).toList();
 
-    String branchData =
-        "${branchName[0].name},${branchName[0].bGreen},${branchName[0].aGreen},${branchName[0].member},${branchName[0].count},${branchName[0].payType},${studentList.length},${entryList.length}\r\n";
+    String branchData = "${branchName[0].name},${branchName[0].bGreen},${branchName[0].aGreen},${branchName[0].member},${branchName[0].count},${branchName[0].payType},${studentList.length},${entryList.length}\r\n" +
+        "${branchName[0].eOrange},${branchName[0].eYellow},${branchName[0].eGreen},${branchName[0].eBlue},${branchName[0].ePurple},${branchName[0].eBrown3},${branchName[0].eBrown2},${branchName[0].eBrown1},${branchName[0].eBlack}\r\n" +
+        "${branchName[0].kickpad},${branchName[0].gloves},${branchName[0].footguard},${branchName[0].chestguard},${branchName[0].card}\r\n" +
+        "${branchName[0].dress12},${branchName[0].dress13},${branchName[0].dress14},${branchName[0].dress15},${branchName[0].dress16},${branchName[0].dress17},${branchName[0].dress18},${branchName[0].dress19}\r\n" +
+        "${branchName[0].dress20},${branchName[0].dress21},${branchName[0].dress22},${branchName[0].dress23},${branchName[0].dress24},${branchName[0].spdress},${branchName[0].vspdress},${branchName[0].vvspdress}\r\n";
     file.writeAsStringSync(branchData, mode: FileMode.append);
     print('branch done');
 
@@ -405,7 +409,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   }
 
   // import backup
-  _importBackUp() async {
+  _importBackUp(BuildContext context) async {
     Branch _branch = Branch(
       _nameBranch,
       _bGreenData,
@@ -427,7 +431,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
       String csv = file.readAsStringSync();
       final res = CsvToListConverter().convert(csv, shouldParseNumbers: false);
       List<dynamic> data = res[0];
-      _branch.name = data[0];
+      _branch.name = data[0].toString().trimLeft();
       _branch.bGreen = int.parse(data[1]);
       _branch.aGreen = int.parse(data[2]);
       _branch.member = int.parse(data[3]);
@@ -435,21 +439,55 @@ class _ExpoImpoState extends State<ExpoImpo> {
       _branch.payType = int.parse(data[5]);
       studentLength = int.parse(data[6]);
       entryLength = int.parse(data[7]);
+      data = res[1];
+      _branch.eOrange = int.parse(data[0]);
+      _branch.eYellow = int.parse(data[1]);
+      _branch.eGreen = int.parse(data[2]);
+      _branch.eBlue = int.parse(data[3]);
+      _branch.ePurple = int.parse(data[4]);
+      _branch.eBrown3 = int.parse(data[5]);
+      _branch.eBrown2 = int.parse(data[6]);
+      _branch.eBrown1 = int.parse(data[7]);
+      _branch.eBlack = int.parse(data[8]);
+      data = res[2];
+      _branch.kickpad = int.parse(data[0]);
+      _branch.gloves = int.parse(data[1]);
+      _branch.footguard = int.parse(data[2]);
+      _branch.chestguard = int.parse(data[3]);
+      _branch.card = int.parse(data[4]);
+      data = res[3];
+      _branch.dress12 = int.parse(data[0]);
+      _branch.dress13 = int.parse(data[1]);
+      _branch.dress14 = int.parse(data[2]);
+      _branch.dress15 = int.parse(data[3]);
+      _branch.dress16 = int.parse(data[4]);
+      _branch.dress17 = int.parse(data[5]);
+      _branch.dress18 = int.parse(data[6]);
+      _branch.dress19 = int.parse(data[7]);
+      data = res[4];
+      _branch.dress20 = int.parse(data[0]);
+      _branch.dress21 = int.parse(data[1]);
+      _branch.dress22 = int.parse(data[2]);
+      _branch.dress23 = int.parse(data[3]);
+      _branch.dress24 = int.parse(data[4]);
+      _branch.spdress = int.parse(data[5]);
+      _branch.vspdress = int.parse(data[6]);
+      _branch.vvspdress = int.parse(data[7]);
       _databaseBranch.insertName(_branch);
 
-      for (int i = 1; i <= studentLength; i++) {
+      for (int i = 5; i <= studentLength + 4; i++) {
         Student _student = Student(_rollStd, _nameStd, _dob, _branchStd, _belt,
             _fee, _fromFee, _num, _gender, _advBalStd, _memberStd);
 
         List<dynamic> row = res[i];
         _student.roll = int.parse(row[0]);
-        _student.name = row[1];
-        _student.dob = row[2];
-        _student.number = row[3];
+        _student.name = row[1].toString().trimLeft();
+        _student.dob = row[2].toString().trimLeft();
+        _student.number = row[3].toString().trimLeft();
         _student.gender = int.parse(row[4]);
-        _student.fee = row[5];
-        _student.fromFee = row[6];
-        _student.branch = row[7];
+        _student.fee = row[5].toString().trimLeft();
+        _student.fromFee = row[6].toString().trimLeft();
+        _student.branch = row[7].toString().trimLeft();
         _student.belt = int.parse(row[8]);
         _student.advBal = int.parse(row[9]);
         _student.member = int.parse(row[10]);
@@ -458,7 +496,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
         print("added ${_student.name}");
       }
 
-      for (int i = studentLength; i <= entryLength; i++) {
+      for (int i = studentLength + 5; i <= entryLength + 5; i++) {
         Entry _entry = Entry(
             _roll,
             _name,
@@ -473,13 +511,13 @@ class _ExpoImpoState extends State<ExpoImpo> {
 
         List<dynamic> data = res[i];
         _entry.roll = int.parse(data[0]);
-        _entry.name = data[1];
-        _entry.branch = data[2];
-        _entry.advBal = data[3];
-        _entry.date = data[4];
-        _entry.detailedReason = data[5];
-        _entry.pending = data[6];
-        _entry.reason = data[7];
+        _entry.name = data[1].toString().trimLeft();
+        _entry.branch = data[2].toString().trimLeft();
+        _entry.advBal = data[3].toString().trimLeft();
+        _entry.date = data[4].toString().trimLeft();
+        _entry.detailedReason = data[5].toString().trimLeft();
+        _entry.pending = data[6].toString().trimLeft();
+        _entry.reason = data[7].toString().trimLeft();
         _entry.subTotal = int.parse(data[8]);
         _entry.total = int.parse(data[9]);
         print(_entry.name);
@@ -512,7 +550,11 @@ class _ExpoImpoState extends State<ExpoImpo> {
 
   // show snackbar
   void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    _expoImpo.currentState.showSnackBar(snackBar);
+    Flushbar(
+      aroundPadding: EdgeInsets.all(8.0),
+      borderRadius: 8,
+      message: message,
+      duration: Duration(milliseconds: 400),
+    )..show(context);
   }
 }

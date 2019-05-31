@@ -1111,8 +1111,11 @@ class _AddEntryState extends State<AddEntry> {
         }
         _student.fee = "$_month/$_year";
         print(5);
-        _entry.detailedReason =
-            _saveData.toString().replaceAll("[", "").replaceAll("]", "");
+        _entry.detailedReason = _saveData
+            .toString()
+            .replaceAll("[", "")
+            .replaceAll("]", "")
+            .replaceAll(",", "/");
         print(6);
         break;
       case 'Examination':

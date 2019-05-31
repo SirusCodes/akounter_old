@@ -272,6 +272,7 @@ class Branch {
     map['eBrown3'] = _eBrown3;
     map['eBrown2'] = _eBrown2;
     map['eBrown1'] = _eBrown1;
+    map['eBlack'] = _eBlack;
     // misc fee to map
     map['kickpad'] = _kickpad;
     map['gloves'] = _gloves;

@@ -229,12 +229,12 @@ class _ExpoImpoState extends State<ExpoImpo> {
           branchList.where((p) => p.name == branch).toList();
       _branch = branchName[0];
 
-      for (int i = 0; i <= res.length; i++) {
+      for (int i = 1; i < res.length; i++) {
         Student student = Student(_rollStd, _nameStd, _dob, _branchStd, _belt,
             _fee, _fromFee, _num, _gender, _advBalStd, _memberStd);
 
         List<dynamic> row = res[i];
-        student.roll = row[0];
+        student.roll = int.parse(row[0]);
         student.name = row[1].toString().trimLeft();
         student.dob = row[2].toString().trimLeft();
         student.number = row[3].toString().trimLeft();

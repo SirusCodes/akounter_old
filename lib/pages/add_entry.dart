@@ -70,7 +70,8 @@ class _AddEntryState extends State<AddEntry> {
       _spCheck = false,
       _vspCheck = false,
       _vvspCheck = false,
-      _advBalCheck = false;
+      _advBalCheck = false,
+      _addAdvBal = false;
 
   String _title,
       _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
@@ -150,7 +151,11 @@ class _AddEntryState extends State<AddEntry> {
     }
 
     // to balance data
-    _total = _subTotal - _student.advBal + int.parse(_advBalController.text);
+    if (_addAdvBal == true) {
+      _total = _subTotal - _student.advBal + int.parse(_advBalController.text);
+    } else {
+      _total = _subTotal + int.parse(_advBalController.text);
+    }
 
     // innvoice getter
     _payTypeVisible = _branch.payType == 1 && _monthlyVisible ? true : false;
@@ -213,7 +218,21 @@ class _AddEntryState extends State<AddEntry> {
                   child: Column(
                     children: [
                       Text("Subtotal : ₹$_subTotal"),
-                      Text("Adv/Bal : ₹${_student.advBal}"),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Checkbox(
+                            value: _addAdvBal,
+                            onChanged: (bool value) {
+                              setState(() {
+                                _addAdvBal = value;
+                              });
+                            },
+                          ),
+                          Text("Adv/Bal : ₹${_student.advBal}"),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(

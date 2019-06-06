@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:karate/databases/student_data.dart';
 import 'package:karate/models/branch.dart';
 import 'package:karate/models/student.dart';
-import 'package:karate/pages/add_student.dart';
+import 'package:karate/pages/student_details.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class StudentList extends StatefulWidget {
@@ -52,7 +52,6 @@ class _StudentListState extends State<StudentList> {
     });
   }
 
-  var _memberQ = ["Yes", "No"];
   var _belts = [
     "White",
     "Orange",
@@ -66,7 +65,6 @@ class _StudentListState extends State<StudentList> {
     "Black"
   ];
 
-  var _gender = ["Male", "Female"];
   @override
   Widget build(BuildContext context) {
     if (studentList == null) {
@@ -112,13 +110,13 @@ class _StudentListState extends State<StudentList> {
                     "${this.updatedList[index].branch}  ${this.updatedList[index].number}  ${_belts[this.updatedList[index].belt]}  ${this.updatedList[index].fee}"),
                 onTap: () async {
                   print(this.updatedList[index].fee);
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => StudentDetail(updatedList[index]),
-                  //   ),
-                  // );
-                  _showSnapshot(updatedList[index]);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          StudentDetail(updatedList[index], _branchData),
+                    ),
+                  );
                 },
               ),
             );
@@ -202,43 +200,6 @@ class _StudentListState extends State<StudentList> {
           ),
     );
   }
-
-  _showSnapshot(Student student) {
-    return showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              content: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text("Roll No. : ${student.roll}"),
-                  Text("Name : ${student.name}"),
-                  Text("DOB : ${student.dob}"),
-                  Text("Number : ${student.number}"),
-                  Text("Branch : ${student.branch}"),
-                  Text("Belt : ${_belts[student.belt]}"),
-                  Text("Fee Paid Till : ${student.fee}"),
-                  Text("Gender : ${_gender[student.gender]}"),
-                  Text("Member : ${_memberQ[student.member]}"),
-                  RaisedButton(
-                    child: Center(
-                      child: Icon(Icons.edit),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      navigateToStudent(student);
-                    },
-                  )
-                ],
-              ),
-            ));
-  }
-
-  navigateToStudent(Student student) async {
-    Navigator.pop(context);
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddStudent(student, _branchData, branch, "Edit Details");
-    }));
-  }
 }
 
 class StudentSearch extends SearchDelegate<String> {
@@ -252,7 +213,6 @@ class StudentSearch extends SearchDelegate<String> {
   Student student;
   DatabaseStudent _data = DatabaseStudent();
 
-  var _memberQ = ["Yes", "No"];
   var _belts = [
     "White",
     "Orange",
@@ -265,8 +225,6 @@ class StudentSearch extends SearchDelegate<String> {
     "Brown 1",
     "Black"
   ];
-
-  var _gender = ["Male", "Female"];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -333,7 +291,13 @@ class StudentSearch extends SearchDelegate<String> {
               Student _student = await _data.getStudent(
                   suggestedList[index].roll, suggestedList[index].branch);
               print(_student.name);
-              _showSnapshot(suggestedList[index], context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      StudentDetail(updatedList[index], _branchData),
+                ),
+              );
             },
           ),
         );
@@ -387,42 +351,5 @@ class StudentSearch extends SearchDelegate<String> {
             ),
           ),
     );
-  }
-
-  _showSnapshot(Student student, BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              content: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text("Roll No. : ${student.roll}"),
-                  Text("Name : ${student.name}"),
-                  Text("DOB : ${student.dob}"),
-                  Text("Number : ${student.number}"),
-                  Text("Branch : ${student.branch}"),
-                  Text("Belt : ${_belts[student.belt]}"),
-                  Text("Fee Paid Till : ${student.fee}"),
-                  Text("Gender : ${_gender[student.gender]}"),
-                  Text("Member : ${_memberQ[student.member]}"),
-                  RaisedButton(
-                    child: Center(
-                      child: Icon(Icons.edit),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      navigateToStudent(student, context);
-                    },
-                  )
-                ],
-              ),
-            ));
-  }
-
-  navigateToStudent(Student student, BuildContext context) async {
-    Navigator.pop(context);
-    await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return AddStudent(student, _branchData, branch, "Edit Details");
-    }));
   }
 }

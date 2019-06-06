@@ -11,11 +11,11 @@ import 'package:karate/pages/lists/student_list.dart';
 class AddStudent extends StatefulWidget {
   final Student _student;
   final Branch _branchData;
-  final String branch, title;
-  AddStudent(this._student, this._branchData, this.branch, this.title);
+  final String title;
+  AddStudent(this._student, this._branchData, this.title);
   @override
-  State<StatefulWidget> createState() => _AddStudentState(
-      this._student, this._branchData, this.branch, this.title);
+  State<StatefulWidget> createState() =>
+      _AddStudentState(this._student, this._branchData, this.title);
 }
 
 class _AddStudentState extends State<AddStudent> {
@@ -51,7 +51,7 @@ class _AddStudentState extends State<AddStudent> {
   DatabaseBranch _databaseBranch = DatabaseBranch();
   var _branchData = Branch(_name, _bGreen, _aGreen, _member, _count, _payType);
 
-  _AddStudentState(this._student, this._branchData, this.branch, this.title);
+  _AddStudentState(this._student, this._branchData, this.title);
 
   TextEditingController nameController = TextEditingController();
   TextEditingController dobController = TextEditingController();
@@ -131,7 +131,8 @@ class _AddStudentState extends State<AddStudent> {
             onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => StudentList(branch, _branchData),
+                    builder: (context) =>
+                        StudentList(_branchData.name, _branchData),
                   ),
                 ),
             tooltip: 'to list',
@@ -263,7 +264,7 @@ class _AddStudentState extends State<AddStudent> {
                 textCapitalization: TextCapitalization.words,
                 style: TextStyle(color: Colors.black),
                 validator: (value) {
-                  if (value != branch) {
+                  if (value != _branchData.name) {
                     return "Please select branch from home page!!";
                   }
                 },
@@ -449,7 +450,7 @@ class _AddStudentState extends State<AddStudent> {
     }
 
     if (_student.branch.isEmpty) {
-      _student.branch = branch;
+      _student.branch = _branchData.name;
     }
 
     if (_student.member == null) {

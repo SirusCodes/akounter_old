@@ -94,19 +94,37 @@ class _ExpoImpoState extends State<ExpoImpo> {
           ListTile(
             title: Text("Import BackUp"),
             leading: Icon(Icons.file_download),
-            onTap: () => _importBackUp(context),
+            onTap: () {
+              try {
+                _importBackUp(context);
+              } catch (e) {
+                _showSnackBar(context, "File is corrupt");
+              }
+            },
           ),
           ListTile(
             enabled: _checkSelectBranch,
             title: Text("Import Student list"),
             leading: Icon(Icons.file_download),
-            onTap: () => _importStudentData(context),
+            onTap: () {
+              try {
+                _importStudentData(context);
+              } catch (e) {
+                _showSnackBar(context, "File is corrupt");
+              }
+            },
           ),
           ListTile(
               enabled: _checkSelectBranch,
               title: Text("Import Entry list"),
               leading: Icon(Icons.file_download),
-              onTap: () => _importEntryData(context)),
+              onTap: () {
+                try {
+                  _importEntryData(context);
+                } catch (e) {
+                  _showSnackBar(context, "File is corrupt");
+                }
+              }),
           ListTile(
             enabled: _checkSelectBranch,
             title: Text("Create BackUp"),
@@ -234,7 +252,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
             _fee, _fromFee, _num, _gender, _advBalStd, _memberStd);
 
         List<dynamic> row = res[i];
-        student.roll = int.parse(row[0]);
+        student.roll = _branch.count + i;
         student.name = row[1].toString().trimLeft();
         student.dob = row[2].toString().trimLeft();
         student.number = row[3].toString().trimLeft();

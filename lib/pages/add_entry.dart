@@ -1174,7 +1174,11 @@ class _AddEntryState extends State<AddEntry> {
     if (_footguardCheck == true) {
       _saveData.add("Foot Guard");
     }
-    return _saveData.toString().replaceAll("[", "").replaceAll("]", "");
+    return _saveData
+        .toString()
+        .replaceAll("[", "")
+        .replaceAll("]", "")
+        .replaceAll(",", "/");
   }
 
   // check dress data

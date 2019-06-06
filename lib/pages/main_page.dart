@@ -121,7 +121,6 @@ class _MainPageState extends State<MainPage> {
                                       Student(null, "", "", "", null, null,
                                           null, "", null, null, null),
                                       _branchData,
-                                      selectedBranch,
                                       'Add Student'),
                                 ),
                               );
@@ -294,7 +293,6 @@ class _MainPageState extends State<MainPage> {
                             Student(null, "", "", "", null, null, null, "",
                                 null, null, null),
                             _branchData,
-                            selectedBranch,
                             'Add Student'),
                       ),
                     );

@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:karate/models/branch.dart';
 import 'package:karate/widgets/widgets.dart';
@@ -12,7 +13,6 @@ class AddBranch extends StatefulWidget {
 
 class _AddBranchState extends State<AddBranch> {
   var _addBranchFormKey = GlobalKey<FormState>();
-  GlobalKey<ScaffoldState> _addBranchScaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController bGreenController = TextEditingController();
@@ -860,15 +860,15 @@ class _AddBranchState extends State<AddBranch> {
     int result = branch.id == null
         ? await data.insertName(branch)
         : await data.updateName(branch);
+    if (result != 0) {
+      _showSnackBar(context, '${nameController.text} is saved/updated!');
+    } else {
+      _showSnackBar(context, 'Problem Saving Data');
+    }
+    setState(() {
+      reset();
+    });
     Navigator.pop(context);
-    // if (result != 0) {
-    //   _showSnackBar(context, '${nameController.text} is saved/updated!');
-    // } else {
-    //   _showSnackBar(context, 'Problem Saving Data');
-    // }
-    // setState(() {
-    //   reset();
-    // });
   }
 
   // checkBeforeSave
@@ -919,10 +919,11 @@ class _AddBranchState extends State<AddBranch> {
 
   //snackbar
   void _showSnackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(
-      content: Text(message),
+    Flushbar(
+      aroundPadding: EdgeInsets.all(8.0),
+      borderRadius: 8,
+      message: message,
       duration: Duration(seconds: 2),
-    );
-    _addBranchScaffoldKey.currentState.showSnackBar(snackBar);
+    )..show(context);
   }
 }

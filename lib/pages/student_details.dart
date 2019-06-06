@@ -1,33 +1,48 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:karate/databases/entry_data.dart';
+import 'package:flutter/material.dart';
 import 'package:karate/databases/student_data.dart';
+import 'package:karate/models/branch.dart';
 import 'package:karate/models/entry.dart';
 import 'package:karate/models/student.dart';
+import 'package:karate/pages/add_student.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class StudentDetail extends StatefulWidget {
   final Student _student;
-
-  StudentDetail(this._student);
+  final Branch _branch;
+  StudentDetail(this._student, this._branch);
   @override
-  _StudentDetailState createState() => _StudentDetailState(this._student);
+  _StudentDetailState createState() => _StudentDetailState(
+        this._student,
+        this._branch,
+      );
 }
 
 class _StudentDetailState extends State<StudentDetail> {
-  static String _name, _fee, _dob, _fromFee, _branch, _num;
-  static int _roll, _belt, _genderData, _advBal, _member;
-  Student _student = Student(_roll, _name, _dob, _branch, _belt, _fee, _fromFee,
-      _num, _genderData, _advBal, _member);
+  static String _name, _fee, _dob, _fromFee, _branchStud, _num;
+  static int _roll, _belt, _advBal, _memberStud, _genderStud;
+
+  DatabaseEntry _data = DatabaseEntry();
   Entry entry;
-  DatabaseEntry _databaseEntry = DatabaseEntry();
-  DatabaseStudent _databaseStudent = DatabaseStudent();
+  Branch _branch;
+  Student _student;
 
-  _StudentDetailState(this._student);
+  Student _studentUpdate = Student(
+    _roll,
+    _name,
+    _dob,
+    _branchStud,
+    _belt,
+    _fee,
+    _fromFee,
+    _num,
+    _genderStud,
+    _advBal,
+    _memberStud,
+  );
 
-  List<Entry> entryList, updatedList, branchList;
-
-  var _memberQ = ["Yes", "No"];
+  _StudentDetailState(this._student, this._branch);
   var _belts = [
     "White",
     "Orange",
@@ -40,126 +55,140 @@ class _StudentDetailState extends State<StudentDetail> {
     "Brown 1",
     "Black"
   ];
+  var _memberQ = ["Yes", "No"];
 
-  @override
-  void initState() {
-    super.initState();
-    if (entryList == null) {
-      entryList = List<Entry>();
-      branchList = List<Entry>();
-      updateEntryList();
-    }
-  }
+  DatabaseStudent _databaseStudent = DatabaseStudent();
 
+  List<Entry> entryList, updatedList, dateList;
   @override
   Widget build(BuildContext context) {
     if (entryList == null) {
       entryList = List<Entry>();
-      branchList = List<Entry>();
       updateEntryList();
     }
-
-    updatedList = entryList.where((e) => e.branch == _student.branch).toList();
+    updatedList = entryList
+        .where((p) => p.branch == _student.branch && p.roll == _student.roll)
+        .toList();
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: 200.0,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(_student.name),
-              background: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Roll No. : ${_student.roll}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    navigateToStudent(_student);
+                  },
+                ),
+              ],
+              pinned: true,
+              expandedHeight: 200.0,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(_student.name),
+                background: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Roll No. : ${_student.roll}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Branch : ${_student.branch}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+                        Text(
+                          "Branch : ${_student.branch}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Number : ${_student.number}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+                        Text(
+                          "Number : ${_student.number}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Belt : ${_belts[_student.belt]}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Belt : ${_belts[_student.belt]}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Fee Paid Till : ${_student.fee}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+                        Text(
+                          "Fee Paid Till : ${_student.fee}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Member : ${_memberQ[_student.member]}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
+                        Text(
+                          "Member : ${_memberQ[_student.member]}",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
                         ),
-                      ),
-                    ],
-                  )
-                ],
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Card(
-                  elevation: 3.0,
-                  child: ListTile(
-                    title: Text(this.updatedList[index].name),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete,
-                          color: Theme.of(context).primaryColor),
-                      onPressed: () {
-                        _removeEntry(this.updatedList[index]);
-                      },
-                    ),
-                    subtitle: Text(
-                        "${this.updatedList[index].date}  ${this.updatedList[index].reason}  ${this.updatedList[index].total}"),
-                    onTap: () {
-                      _showSnapshot(updatedList[index]);
-                    },
-                  ),
-                );
-              },
-              childCount: updatedList.length,
-            ),
-          ),
-        ],
+          ];
+        },
+        body: ListView.builder(
+          itemCount: updatedList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              elevation: 3.0,
+              child: ListTile(
+                title: Text(this.updatedList[index].name),
+                trailing: IconButton(
+                  icon:
+                      Icon(Icons.delete, color: Theme.of(context).primaryColor),
+                  onPressed: () {
+                    _removeEntry(this.updatedList[index], index);
+                  },
+                ),
+                subtitle: Text(
+                    "${this.updatedList[index].date}  ${this.updatedList[index].reason}  ${this.updatedList[index].total}"),
+                onTap: () {
+                  _showSnapshot(updatedList[index]);
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
-// remove entry
-  _removeEntry(Entry entry) {
+  void updateEntryList() {
+    final Future<Database> dbFuture = _data.initializeDatabase();
+    dbFuture.then((database) {
+      Future<List<Entry>> studentListFuture = _data.getEntryList();
+      studentListFuture.then((list) {
+        setState(() {
+          this.entryList = list;
+        });
+      });
+    });
+  }
+
+  // remove entry
+  _removeEntry(Entry entry, int index) {
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -167,7 +196,7 @@ class _StudentDetailState extends State<StudentDetail> {
             content: Column(
               children: <Widget>[
                 Text(
-                    "Do you really want to delete entry of ${this.entry.name} ?"),
+                    "Do you really want to delete entry of ${this.entryList[index].name} ?"),
                 ButtonBar(
                   alignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -185,7 +214,7 @@ class _StudentDetailState extends State<StudentDetail> {
                         child: Text('Yes'),
                         onPressed: () {
                           Navigator.pop(context);
-                          _databaseEntry.deleteEntry(entry.id);
+                          _data.deleteEntry(entry.id);
                           updateEntryList();
                           checkNUpdateStudData(entry);
                         },
@@ -245,14 +274,17 @@ class _StudentDetailState extends State<StudentDetail> {
     int _month, _year;
 
     if (_entry.advBal != "0") {
-      _student.advBal = 0;
-      _databaseStudent.updateStudent(_student);
+      _studentUpdate =
+          await _databaseStudent.getStudent(_entry.roll, _entry.branch);
+      _studentUpdate.advBal = 0;
+      _databaseStudent.updateStudent(_studentUpdate);
     }
 
     if (_entry.reason.startsWith("Monthly")) {
-      temp = _entry.detailedReason.split(",");
-
-      List temp1 = _student.fee.split("/");
+      temp = _entry.detailedReason.split("/");
+      _studentUpdate =
+          await _databaseStudent.getStudent(_entry.roll, _entry.branch);
+      List temp1 = _studentUpdate.fee.split("/");
 
       print(1);
       if (int.parse(temp1[0]) - temp.length < 0) {
@@ -264,24 +296,25 @@ class _StudentDetailState extends State<StudentDetail> {
         _year = int.parse(temp1[1]);
       }
       print(1);
-      _student.fee = "$_month/$_year";
+      _studentUpdate.fee = "$_month/$_year";
 
       print(temp.length);
-      print(_student.fee);
-      _databaseStudent.updateStudent(_student);
+      print(_studentUpdate.fee);
+      _databaseStudent.updateStudent(_studentUpdate);
     } else if (_entry.reason == "Examination") {
-      _student.belt--;
-      _databaseStudent.updateStudent(_student);
+      _studentUpdate =
+          await _databaseStudent.getStudent(_entry.roll, _entry.branch);
+      _studentUpdate.belt--;
+      _databaseStudent.updateStudent(_studentUpdate);
     }
   }
 
-  void updateEntryList() {
-    final Future<Database> dbFuture = _databaseEntry.initializeDatabase();
-    dbFuture.then((database) {
-      Future<List<Entry>> studentListFuture = _databaseEntry.getEntryList();
-      studentListFuture.then((list) {
-        this.entryList = list;
-      });
-    });
+  // navigator
+  navigateToStudent(Student student) async {
+    Navigator.pop(context);
+    Navigator.pop(context);
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return AddStudent(student, _branch, "Edit Details");
+    }));
   }
 }

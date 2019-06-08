@@ -101,3 +101,32 @@ class CTextNumericField extends StatelessWidget {
     );
   }
 }
+
+// details widget
+class Details extends StatelessWidget {
+  const Details({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          child: Text("Made in ❤ with Karate"),
+        ),
+        Container(
+          child: Text("by Darshan"),
+        ),
+        //version text
+        Container(
+          width: 300.0,
+          child: Text(
+            "v1.6+1",
+            textAlign: TextAlign.right,
+          ),
+        )
+      ],
+    );
+  }
+}

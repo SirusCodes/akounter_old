@@ -32,7 +32,7 @@ class _AddStudentState extends State<AddStudent> {
       _aGreen,
       _count,
       _payType;
-  String branch, title;
+  String title;
 
   var _student = Student(
     _roll,
@@ -110,7 +110,7 @@ class _AddStudentState extends State<AddStudent> {
       _currentMonthSelectedFrom = _months[int.parse(temp1[0]) - 1];
       _currentMemberSelected = _memberQ[_student.member];
     } else {
-      branchController.text = branch;
+      branchController.text = _branchData.name;
       _currentMonthSelected = _months[0];
       _currentBeltSelected = _belts[0];
       _currentGenderSelected = _genders[0];

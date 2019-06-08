@@ -10,6 +10,7 @@ import 'package:karate/models/student.dart';
 import 'package:karate/pages/add_entry.dart';
 import 'package:karate/pages/lists/entry_list.dart';
 import 'package:karate/pages/lists/student_list.dart';
+import 'package:karate/widgets/widgets.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:karate/pages/add_branch.dart';
 import 'package:karate/pages/add_student.dart';
@@ -232,24 +233,7 @@ class _MainPageState extends State<MainPage> {
             ),
             Expanded(
               flex: 1,
-              child: Column(
-                children: [
-                  Container(
-                    child: Text("Made in ❤ with Karate"),
-                  ),
-                  Container(
-                    child: Text("by Darshan"),
-                  ),
-                  //version text
-                  Container(
-                    width: 300.0,
-                    child: Text(
-                      "v1.5+1",
-                      textAlign: TextAlign.right,
-                    ),
-                  )
-                ],
-              ),
+              child: Details(),
             )
           ],
         ),

@@ -1119,13 +1119,20 @@ class _AddEntryState extends State<AddEntry> {
           _year = (int.parse(temp1[1]) + 1);
           print(3);
         } else {
-          _month = (int.parse(temp1[0]) + _monthsNoSelected);
-          _year = (int.parse(temp1[1]));
+          _month = int.parse(temp1[0]) + _monthsNoSelected;
+          _year = int.parse(temp1[1]);
           print(4);
         }
         for (int i = 0; i < _monthsNoSelected; i++) {
-          temp = (int.parse(temp1[0]) + i) % 12;
-          _saveData.add(_months[temp]);
+          if (int.parse(temp1[0]) + i > 11) {
+            print(4);
+
+            temp = (int.parse(temp1[0]) + i) % 12;
+            _saveData.add("${_months[temp]}-${int.parse(temp1[1]) + 1}");
+          } else {
+            temp = int.parse(temp1[0]) + i;
+            _saveData.add("${_months[temp]}-${int.parse(temp1[1])}");
+          }
         }
         _student.fee = "$_month/$_year";
         print(5);

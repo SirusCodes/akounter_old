@@ -7,6 +7,7 @@ import 'package:karate/models/entry.dart';
 import 'package:karate/models/student.dart';
 import 'package:karate/pages/add_student.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StudentDetail extends StatefulWidget {
   final Student _student;
@@ -80,6 +81,12 @@ class _StudentDetailState extends State<StudentDetail> {
                   icon: Icon(Icons.edit),
                   onPressed: () {
                     navigateToStudent(_student);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.call),
+                  onPressed: () {
+                    _callStudent(_student.number);
                   },
                 ),
               ],
@@ -316,5 +323,11 @@ class _StudentDetailState extends State<StudentDetail> {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return AddStudent(student, _branch, "Edit Details");
     }));
+  }
+
+  _callStudent(String number) {
+    if (number.length == 10) {
+      launch("tel: $number");
+    }
   }
 }

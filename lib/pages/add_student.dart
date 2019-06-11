@@ -187,16 +187,14 @@ class _AddStudentState extends State<AddStudent> {
                       key: Key('DOB'),
                       controller: dobController,
                       style: TextStyle(color: Colors.black),
-                      validator: (value) {
-                        List temp;
-                        temp = value.split("/");
-                        String tempStr = temp[2];
-                        if (temp.length != 3 ||
-                            tempStr.length != 4 ||
-                            value.isEmpty) {
-                          return "Write DOB in DD/MM/YYYY format!";
-                        }
-                      },
+                      // validator: (value) {
+                      //   List temp;
+                      //   temp = value.split("/");
+                      //   String tempStr = temp[2];
+                      //   if (temp.length != 3 || tempStr.length != 4) {
+                      //     return "Write DOB in DD/MM/YYYY format!";
+                      //   }
+                      // },
                       onSaved: (value) {
                         _student.dob = value;
                       },
@@ -232,11 +230,11 @@ class _AddStudentState extends State<AddStudent> {
                 controller: numController,
                 textCapitalization: TextCapitalization.words,
                 style: TextStyle(color: Colors.black),
-                validator: (value) {
-                  if (value.length != 10 || value.isEmpty) {
-                    return "Given Phone No. is incorrect!";
-                  }
-                },
+                // validator: (value) {
+                //   if (value.length != 10) {
+                //     return "Given Phone No. is incorrect!";
+                //   }
+                // },
                 onSaved: (value) {
                   _student.number = value;
                 },
@@ -456,6 +454,9 @@ class _AddStudentState extends State<AddStudent> {
     if (_student.member == null) {
       _student.member = 1;
     }
+
+    _student.dob = _student.dob ?? "";
+    _student.number = _student.number ?? "";
 
     if (_student.id != null) {
       result = await _data.updateStudent(_student);

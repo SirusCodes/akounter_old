@@ -34,8 +34,8 @@ android {
         applicationId "aiskf.karate"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 9
-        versionName '1.6+1'
+        versionCode 10
+        versionName '1.6+2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

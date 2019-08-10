@@ -87,9 +87,9 @@ class _AddEntryState extends State<AddEntry> {
       _sizeNo = 12,
       _invoiceId,
       _monthlyFee,
-      _tournamentHeight,
       _tournamentWeight;
 
+  double _tournamentHeight;
   TextEditingController _monthlyController = TextEditingController();
   TextEditingController _advBalController = TextEditingController();
   TextEditingController _dressSizeController = TextEditingController();
@@ -145,6 +145,9 @@ class _AddEntryState extends State<AddEntry> {
     _advBalController.text = "0";
     _reasonController.text = "";
     _amountController.text = "";
+    if (_student.dob.isNotEmpty) {
+      _dobController.text = _student.dob;
+    }
     checkNUpdate();
   }
 
@@ -807,7 +810,7 @@ class _AddEntryState extends State<AddEntry> {
                       controller: _heightTourController,
                       style: TextStyle(color: Colors.black),
                       onChanged: (value) {
-                        _tournamentHeight = int.parse(value);
+                        _tournamentHeight = double.parse(value);
                       },
                       decoration: InputDecoration(
                         hintText: "5.10",
@@ -1096,7 +1099,7 @@ class _AddEntryState extends State<AddEntry> {
         _equipVisible = _examinationVisible =
             _monthlyVisible = _dressVisible = _otherVisible = false;
         _tournamentVisible = true;
-        _subTotal = 12500;
+        _subTotal = 1250;
         break;
 
       case "Others":

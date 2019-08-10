@@ -124,7 +124,7 @@ class Details extends StatelessWidget {
         Container(
           width: 300.0,
           child: Text(
-            "v1.6+2",
+            "v1.7",
             textAlign: TextAlign.right,
           ),
         )

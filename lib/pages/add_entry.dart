@@ -61,7 +61,8 @@ class _AddEntryState extends State<AddEntry> {
       _dressVisible = false,
       _otherVisible = false,
       _advBalVisible = false,
-      _payTypeVisible = false;
+      _payTypeVisible = false,
+      _tournamentVisible = false;
   // BoolCheck
   bool _glovesCheck = false,
       _kickpadCheck = false,
@@ -75,6 +76,7 @@ class _AddEntryState extends State<AddEntry> {
 
   String _title,
       _date = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
+      _dobDate = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
       _examDate = DateFormat("dd/MM/yyyy").format(DateTime.now()).toString(),
       _currentReason = "";
 
@@ -84,7 +86,9 @@ class _AddEntryState extends State<AddEntry> {
       _equipSubTotal = 0,
       _sizeNo = 12,
       _invoiceId,
-      _monthlyFee;
+      _monthlyFee,
+      _tournamentHeight,
+      _tournamentWeight;
 
   TextEditingController _monthlyController = TextEditingController();
   TextEditingController _advBalController = TextEditingController();
@@ -92,6 +96,9 @@ class _AddEntryState extends State<AddEntry> {
   TextEditingController _reasonController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   TextEditingController _monthlyIndirectController = TextEditingController();
+  TextEditingController _dobController = TextEditingController();
+  TextEditingController _heightTourController = TextEditingController();
+  TextEditingController _weightTourController = TextEditingController();
 
   List<String> _reasons = [
     'Monthly',
@@ -99,6 +106,7 @@ class _AddEntryState extends State<AddEntry> {
     'Equipments',
     'Dress',
     'Card',
+    'Tournament',
     'Others'
   ];
   List<int> _monthsNo = [0, 1, 2, 3, 4, 5, 6];
@@ -172,10 +180,9 @@ class _AddEntryState extends State<AddEntry> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => EntryList(
-                        Student(
-                            0, "", '', _branch.name, 0, "", "", "", 0, 0, 0),
-                        _branch,
-                      ),
+                    Student(0, "", '', _branch.name, 0, "", "", "", 0, 0, 0),
+                    _branch,
+                  ),
                 ),
               );
             },
@@ -383,6 +390,10 @@ class _AddEntryState extends State<AddEntry> {
               // Dress
               //
               buildDressFee(),
+              //
+              // Tournament
+              //
+              buildTournament(),
               //
               // Others
               //
@@ -741,6 +752,114 @@ class _AddEntryState extends State<AddEntry> {
   }
 
 //
+// TOURNAMENT
+//
+  Visibility buildTournament() {
+    return Visibility(
+      visible: _tournamentVisible,
+      child: Card(
+        elevation: 3.0,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      keyboardType: TextInputType.datetime,
+                      key: Key('DOB'),
+                      controller: _dobController,
+                      style: TextStyle(color: Colors.black),
+                      onChanged: (value) {
+                        _dobDate = value;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "DD/MM/YYYY",
+                        hintStyle: TextStyle(color: Colors.black26),
+                        labelText: "Date Of Birth",
+                        labelStyle: TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                            width: 10.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.date_range),
+                    onPressed: () => _selectDOBDate(context),
+                  )
+                ],
+              ),
+              SizedBox(height: 10.0),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      key: Key('height'),
+                      controller: _heightTourController,
+                      style: TextStyle(color: Colors.black),
+                      onChanged: (value) {
+                        _tournamentHeight = int.parse(value);
+                      },
+                      decoration: InputDecoration(
+                        hintText: "5.10",
+                        hintStyle: TextStyle(color: Colors.black26),
+                        labelText: "Height",
+                        labelStyle: TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                            width: 10.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    flex: 1,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      key: Key('weight'),
+                      controller: _weightTourController,
+                      style: TextStyle(color: Colors.black),
+                      onChanged: (value) {
+                        _tournamentWeight = int.parse(value);
+                      },
+                      decoration: InputDecoration(
+                        hintText: "5.10",
+                        hintStyle: TextStyle(color: Colors.black26),
+                        labelText: "Weight",
+                        labelStyle: TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                            width: 10.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+//
 // OTHERS
 //
   Visibility buildOthers() {
@@ -940,14 +1059,15 @@ class _AddEntryState extends State<AddEntry> {
     switch (reason) {
       case "Monthly":
         _monthlyVisible = true;
-        _equipVisible =
-            _otherVisible = _dressVisible = _examinationVisible = false;
+        _equipVisible = _otherVisible =
+            _dressVisible = _examinationVisible = _tournamentVisible = false;
         _subTotal = _monthlyFee;
         break;
 
       case 'Examination':
         _examinationVisible = true;
-        _equipVisible = _otherVisible = _dressVisible = _monthlyVisible = false;
+        _equipVisible = _otherVisible =
+            _dressVisible = _monthlyVisible = _tournamentVisible = false;
         if (_student.id != null) {
           checkExamFee(_student.belt);
         }
@@ -955,27 +1075,35 @@ class _AddEntryState extends State<AddEntry> {
 
       case 'Equipments':
         _equipVisible = true;
-        _monthlyVisible =
-            _otherVisible = _dressVisible = _examinationVisible = false;
+        _monthlyVisible = _otherVisible =
+            _dressVisible = _examinationVisible = _tournamentVisible = false;
         _subTotal = 0;
         break;
 
       case 'Dress':
         _dressVisible = true;
-        _equipVisible =
-            _otherVisible = _examinationVisible = _monthlyVisible = false;
+        _equipVisible = _otherVisible =
+            _examinationVisible = _monthlyVisible = _tournamentVisible = false;
         break;
 
       case 'Card':
-        _equipVisible = _examinationVisible =
-            _otherVisible = _monthlyVisible = _dressVisible = false;
+        _equipVisible = _examinationVisible = _otherVisible =
+            _monthlyVisible = _dressVisible = _tournamentVisible = false;
         _subTotal = _branch.card;
         break;
 
+      case 'Tournament':
+        _equipVisible = _examinationVisible =
+            _monthlyVisible = _dressVisible = _otherVisible = false;
+        _tournamentVisible = true;
+        _subTotal = 12500;
+        break;
+
       case "Others":
-        _equipVisible =
-            _examinationVisible = _monthlyVisible = _dressVisible = false;
+        _equipVisible = _examinationVisible =
+            _monthlyVisible = _dressVisible = _tournamentVisible = false;
         _otherVisible = true;
+        break;
     }
   }
 
@@ -1158,6 +1286,12 @@ class _AddEntryState extends State<AddEntry> {
       case 'Card':
         _entry.detailedReason = 'Card';
         break;
+      case 'Tournament':
+        _student.dob = _dobDate;
+        _databaseStudent.updateStudent(_student);
+        _entry.detailedReason =
+            'Height: $_tournamentHeight, Weight: $_tournamentWeight';
+        break;
       case 'Others':
         if (_otherVisible) {
           _entry.detailedReason = _reasonController.text;
@@ -1216,6 +1350,22 @@ class _AddEntryState extends State<AddEntry> {
     if (picked != null) {
       setState(() {
         _date = DateFormat("dd/MM/yyyy").format(picked);
+      });
+    }
+  }
+
+  // dob date selector
+  Future<Null> _selectDOBDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1960),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _dobDate = DateFormat("dd/MM/yyyy").format(picked);
+        _dobController.text = _dobDate.toString();
       });
     }
   }

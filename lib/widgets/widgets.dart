@@ -91,14 +91,16 @@ class CTextNumericField extends StatelessWidget {
         label: label,
         onSaved: onSaved,
         hint: hint,
-        validator: (value) {
-          if (value <= 0 || value == null) {
-            return "Incorrect value";
-          }
-        },
+        validator: _validator,
         keyboardType: TextInputType.number,
       ),
     );
+  }
+
+  _validator(value) {
+    if (value <= 0 || value == null) {
+      return "Incorrect value";
+    }
   }
 }
 

@@ -190,12 +190,12 @@ class _MainPageState extends State<MainPage> {
                             color: Theme.of(context).primaryColor,
                           ),
                           onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddBranch(branchName[index]),
-                                ),
-                              ),
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AddBranch(branchName[index]),
+                            ),
+                          ),
                         ),
                         trailing: IconButton(
                           icon: Icon(Icons.delete,
@@ -325,10 +325,10 @@ class _MainPageState extends State<MainPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => EntryList(
-                            Student(null, "", '', selectedBranch, null, null,
-                                null, "", null, null, null),
-                            _branchData,
-                          ),
+                        Student(null, "", '', selectedBranch, null, null, null,
+                            "", null, null, null),
+                        _branchData,
+                      ),
                     ),
                   );
                 },
@@ -368,7 +368,7 @@ class _MainPageState extends State<MainPage> {
   // show snackbar
   void _showSnackBar(BuildContext context, String message) {
     Flushbar(
-      aroundPadding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(8.0),
       borderRadius: 8,
       message: message,
       duration: Duration(seconds: 2),

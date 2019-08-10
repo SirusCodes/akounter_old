@@ -253,11 +253,7 @@ class _AddBranchState extends State<AddBranch> {
                     textCapitalization: TextCapitalization.words,
                     style: TextStyle(color: Colors.black),
                     controller: nameController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Enter a proper name!";
-                      }
-                    },
+                    validator: _nameValidator,
                     onSaved: (value) {
                       branch.name = value;
                     },
@@ -283,11 +279,7 @@ class _AddBranchState extends State<AddBranch> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: Colors.black),
                     controller: bGreenController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Enter Monthly fee before Green";
-                      }
-                    },
+                    validator: _bGreenValidator,
                     onSaved: (value) {
                       branch.bGreen = int.parse(value);
                     },
@@ -313,11 +305,7 @@ class _AddBranchState extends State<AddBranch> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: Colors.black),
                     controller: aGreenController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Enter Monthly fee after Green";
-                      }
-                    },
+                    validator: _aGreenValidator,
                     onSaved: (value) {
                       branch.aGreen = int.parse(value);
                     },
@@ -343,11 +331,7 @@ class _AddBranchState extends State<AddBranch> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: Colors.black),
                     controller: memberController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Enter member discount(if not then 0)";
-                      }
-                    },
+                    validator: _memberValidator,
                     onSaved: (value) {
                       branch.member = int.parse(value);
                     },
@@ -385,6 +369,30 @@ class _AddBranchState extends State<AddBranch> {
         },
       ),
     );
+  }
+
+  _bGreenValidator(String value) {
+    if (value.isEmpty) {
+      return "Enter Monthly fee before Green";
+    }
+  }
+
+  _memberValidator(String value) {
+    if (value.isEmpty) {
+      return "Enter member discount(if not then 0)";
+    }
+  }
+
+  _aGreenValidator(String value) {
+    if (value.isEmpty) {
+      return "Enter Monthly fee after Green";
+    }
+  }
+
+  _nameValidator(String value) {
+    if (value.isEmpty) {
+      return "Enter a proper name!";
+    }
   }
 
   ExpansionTile buildEquipmentFee() {
@@ -920,7 +928,7 @@ class _AddBranchState extends State<AddBranch> {
   //snackbar
   void _showSnackBar(BuildContext context, String message) {
     Flushbar(
-      aroundPadding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(8.0),
       borderRadius: 8,
       message: message,
       duration: Duration(seconds: 2),

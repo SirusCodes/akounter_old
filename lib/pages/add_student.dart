@@ -129,12 +129,12 @@ class _AddStudentState extends State<AddStudent> {
           IconButton(
             icon: Icon(Icons.list),
             onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        StudentList(_branchData.name, _branchData),
-                  ),
-                ),
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    StudentList(_branchData.name, _branchData),
+              ),
+            ),
             tooltip: 'to list',
           )
         ],
@@ -152,11 +152,7 @@ class _AddStudentState extends State<AddStudent> {
                 controller: nameController,
                 textCapitalization: TextCapitalization.words,
                 style: TextStyle(color: Colors.black),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return "Enter a valid name!";
-                  }
-                },
+                validator: (value) => _nameValidator(value),
                 onSaved: (value) {
                   _student.name = value;
                 },
@@ -261,11 +257,7 @@ class _AddStudentState extends State<AddStudent> {
                 controller: branchController,
                 textCapitalization: TextCapitalization.words,
                 style: TextStyle(color: Colors.black),
-                validator: (value) {
-                  if (value != _branchData.name) {
-                    return "Please select branch from home page!!";
-                  }
-                },
+                validator: (value) => _branchValidator(value),
                 onSaved: (value) {
                   _student.branch = value;
                 },
@@ -413,6 +405,18 @@ class _AddStudentState extends State<AddStudent> {
     );
   }
 
+  _branchValidator(String value) {
+    if (value != _branchData.name) {
+      return "Please select branch from home page!!";
+    }
+  }
+
+  _nameValidator(String value) {
+    if (value.isEmpty) {
+      return "Enter a valid name!";
+    }
+  }
+
   //date selector
   Future<Null> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -504,7 +508,7 @@ class _AddStudentState extends State<AddStudent> {
   //snackbar
   void _showSnackBar(BuildContext context, String message) {
     Flushbar(
-      aroundPadding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(8.0),
       borderRadius: 8,
       message: message,
       duration: Duration(seconds: 2),

@@ -569,7 +569,7 @@ class _ExpoImpoState extends State<ExpoImpo> {
   // show snackbar
   void _showSnackBar(BuildContext context, String message) {
     Flushbar(
-      aroundPadding: EdgeInsets.all(8.0),
+      margin: EdgeInsets.all(8.0),
       borderRadius: 8,
       message: message,
       duration: Duration(seconds: 2),

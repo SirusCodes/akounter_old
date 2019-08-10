@@ -12,6 +12,7 @@ class Branch {
       _eBrown1,
       _eBlack;
   int _kickpad, _gloves, _chestguard, _footguard, _card;
+  //  _tournament;
   int _dress12,
       _dress13,
       _dress14,
@@ -45,6 +46,7 @@ class Branch {
       this._chestguard,
       this._footguard,
       this._card,
+      // this._tournament,
       this._dress12,
       this._dress13,
       this._dress14,
@@ -86,6 +88,7 @@ class Branch {
   int get chestguard => _chestguard;
   int get footguard => _footguard;
   int get card => _card;
+  // int get tournament => _tournament;
   // dress amount getter
   int get dress12 => _dress12;
   int get dress13 => _dress13;
@@ -188,6 +191,10 @@ class Branch {
     this._card = newcard;
   }
 
+  // set tournament(int newtournament) {
+  //   this._tournament = newtournament;
+  // }
+
   // dress fee setter
   set dress12(int newdress12) {
     this._dress12 = newdress12;
@@ -279,6 +286,7 @@ class Branch {
     map['chestguard'] = _chestguard;
     map['footguard'] = _footguard;
     map['card'] = _card;
+    // map['tournament'] = _tournament;
     // dress fee to map
     map['dress12'] = _dress12;
     map['dress13'] = _dress13;
@@ -324,6 +332,7 @@ class Branch {
     this._chestguard = map['chestguard'];
     this._footguard = map['footguard'];
     this._card = map['card'];
+    // this._tournament = map['tournament'];
     // dress fee from map
     this._dress12 = map['dress12'];
     this._dress13 = map['dress13'];

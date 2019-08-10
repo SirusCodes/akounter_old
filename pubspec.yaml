@@ -21,7 +21,7 @@ dependencies:
   simple_permissions: ^0.1.9
   csv: ^4.0.2
   flutter_document_picker: ^2.0.0
-  flushbar: ^1.5.3
+  flushbar: ^1.8.2
   url_launcher: ^5.0.3
 
 

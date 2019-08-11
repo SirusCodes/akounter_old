@@ -253,7 +253,7 @@ class _AddBranchState extends State<AddBranch> {
                     textCapitalization: TextCapitalization.words,
                     style: TextStyle(color: Colors.black),
                     controller: nameController,
-                    validator: _nameValidator,
+                    validator:(value)=> _nameValidator(value),
                     onSaved: (value) {
                       branch.name = value;
                     },
@@ -279,7 +279,7 @@ class _AddBranchState extends State<AddBranch> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: Colors.black),
                     controller: bGreenController,
-                    validator: _bGreenValidator,
+                    validator:(value)=> _bGreenValidator(value),
                     onSaved: (value) {
                       branch.bGreen = int.parse(value);
                     },
@@ -305,7 +305,7 @@ class _AddBranchState extends State<AddBranch> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: Colors.black),
                     controller: aGreenController,
-                    validator: _aGreenValidator,
+                    validator:(value)=> _aGreenValidator(value),
                     onSaved: (value) {
                       branch.aGreen = int.parse(value);
                     },
@@ -331,7 +331,7 @@ class _AddBranchState extends State<AddBranch> {
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: Colors.black),
                     controller: memberController,
-                    validator: _memberValidator,
+                    validator:(value)=> _memberValidator(value),
                     onSaved: (value) {
                       branch.member = int.parse(value);
                     },

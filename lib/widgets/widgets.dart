@@ -91,13 +91,17 @@ class CTextNumericField extends StatelessWidget {
         label: label,
         onSaved: onSaved,
         hint: hint,
-        validator:(value)=> _validator(value),
+        validator: (value) {
+          _validator(int.parse(controller.text));
+
+          return null;
+        },
         keyboardType: TextInputType.number,
       ),
     );
   }
 
-  _validator(value) {
+  _validator(int value) {
     if (value <= 0 || value == null) {
       return "Incorrect value";
     }
@@ -124,7 +128,7 @@ class Details extends StatelessWidget {
         Container(
           width: 300.0,
           child: Text(
-            "v1.7",
+            "v1.7-beta",
             textAlign: TextAlign.right,
           ),
         )

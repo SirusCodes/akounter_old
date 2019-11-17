@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:karate/pages/branch_page.dart';
 import 'package:karate/pages/main_page.dart';
 import 'package:karate/select_branch.dart';
 import 'package:karate/work_in_progress.dart';
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
     var materialApp = MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AKounter',
-      home: MainPage(),
+      home: BranchPage(),
       theme: ThemeData(
         primaryColor: Colors.blueGrey,
         fontFamily: 'GoogleSans',
